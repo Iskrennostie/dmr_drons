@@ -94,76 +94,48 @@
     cursor.setAttribute("aria-hidden", "true");
     cursor.innerHTML = "<i></i><span></span>";
     document.body.append(cursor);
+    document.body.classList.add("has-studio-cursor");
 
-    let targetX = innerWidth / 2;
-    let targetY = innerHeight / 2;
-    let cursorX = targetX;
-    let cursorY = targetY;
+    let targetX = 0;
+    let targetY = 0;
+    let cursorFrame = 0;
     let visible = false;
-    const renderCursor = () => {
-      cursorX += (targetX - cursorX) * 0.19;
-      cursorY += (targetY - cursorY) * 0.19;
-      cursor.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0)`;
-      requestAnimationFrame(renderCursor);
+    const paintCursor = () => {
+      cursorFrame = 0;
+      cursor.style.transform = `translate3d(${targetX}px, ${targetY}px, 0)`;
     };
-    renderCursor();
 
     addEventListener("pointermove", (event) => {
       targetX = event.clientX;
       targetY = event.clientY;
+      if (!cursorFrame) cursorFrame = requestAnimationFrame(paintCursor);
       if (!visible) {
         visible = true;
         cursor.classList.add("is-visible");
       }
     }, { passive: true });
-    addEventListener("pointerleave", () => cursor.classList.remove("is-visible"));
+    addEventListener("pointerleave", () => {
+      visible = false;
+      cursor.classList.remove("is-visible");
+    });
     addEventListener("pointerdown", () => cursor.classList.add("is-pressed"));
     addEventListener("pointerup", () => cursor.classList.remove("is-pressed"));
 
     document.addEventListener("pointerover", (event) => {
-      const interactive = event.target.closest("[data-cursor], a, button, input, textarea");
+      const interactive = event.target.closest("[data-cursor], [data-turntable-zone], a, button, input, textarea");
       if (!interactive) return;
-      const label = interactive.dataset.cursor || (interactive.matches("input,textarea") ? "ВВОД" : "");
+      const label = interactive.dataset.cursor
+        || (interactive.hasAttribute("data-turntable-zone") ? "ВРАЩАТЬ" : "")
+        || (interactive.matches("input,textarea") ? "ВВОД" : "");
       cursor.querySelector("span").textContent = label;
       cursor.classList.toggle("has-label", Boolean(label));
       cursor.classList.add("is-active");
     });
     document.addEventListener("pointerout", (event) => {
-      const interactive = event.target.closest("[data-cursor], a, button, input, textarea");
+      const interactive = event.target.closest("[data-cursor], [data-turntable-zone], a, button, input, textarea");
       if (!interactive || interactive.contains(event.relatedTarget)) return;
       cursor.classList.remove("is-active", "has-label");
       cursor.querySelector("span").textContent = "";
-    });
-
-    document.querySelectorAll(".model-chapter").forEach((chapter) => {
-      const visual = chapter.querySelector(".model-chapter__visual");
-      const image = chapter.querySelector(".model-chapter__visual img");
-      if (!visual || !image) return;
-      visual.addEventListener("pointermove", (event) => {
-        const bounds = visual.getBoundingClientRect();
-        const x = (event.clientX - bounds.left) / bounds.width - 0.5;
-        const y = (event.clientY - bounds.top) / bounds.height - 0.5;
-        image.style.setProperty("--model-shift-x", `${x * 20}px`);
-        image.style.setProperty("--model-shift-y", `${y * 12}px`);
-        chapter.style.setProperty("--spot-x", `${(x + 0.5) * 100}%`);
-        chapter.style.setProperty("--spot-y", `${(y + 0.5) * 100}%`);
-      }, { passive: true });
-      visual.addEventListener("pointerleave", () => {
-        image.style.setProperty("--model-shift-x", "0px");
-        image.style.setProperty("--model-shift-y", "0px");
-      });
-    });
-
-    document.querySelectorAll(".button, .studio-round-link").forEach((button) => {
-      button.addEventListener("pointermove", (event) => {
-        const bounds = button.getBoundingClientRect();
-        button.style.setProperty("--magnet-x", `${(event.clientX - bounds.left - bounds.width / 2) * 0.12}px`);
-        button.style.setProperty("--magnet-y", `${(event.clientY - bounds.top - bounds.height / 2) * 0.12}px`);
-      }, { passive: true });
-      button.addEventListener("pointerleave", () => {
-        button.style.setProperty("--magnet-x", "0px");
-        button.style.setProperty("--magnet-y", "0px");
-      });
     });
   }
 

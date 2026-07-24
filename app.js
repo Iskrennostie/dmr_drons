@@ -2,7 +2,6 @@
   const products = window.MDR_PRODUCTS || {};
   const ids = window.MDR_MODEL_ORDER || Object.keys(products);
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const supportsViewTransitions = typeof document.startViewTransition === "function";
   const money = window.MDR_MONEY || ((value) => new Intl.NumberFormat("ru-RU").format(value));
   const pageFor = window.MDR_MODEL_PAGE || ((id) => `model.html?model=${id}`);
 
@@ -18,7 +17,11 @@
   transitionLayer.className = "page-transition-layer";
   transitionLayer.setAttribute("aria-hidden", "true");
   document.body.append(transitionLayer);
-  window.addEventListener("pageshow", () => document.body.classList.remove("is-leaving"));
+  let navigationPending = false;
+  window.addEventListener("pageshow", () => {
+    navigationPending = false;
+    document.body.classList.remove("is-leaving");
+  });
   if (!reduceMotion) {
     document.addEventListener("click", (event) => {
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
@@ -29,8 +32,10 @@
       const sameDocument = destination.pathname === window.location.pathname && destination.search === window.location.search;
       if (sameDocument && destination.hash) return;
       event.preventDefault();
+      if (navigationPending) return;
+      navigationPending = true;
       document.body.classList.add("is-leaving");
-      window.setTimeout(() => window.location.assign(destination.href), 360);
+      window.setTimeout(() => window.location.assign(destination.href), 220);
     });
   }
 
@@ -148,43 +153,35 @@
       const label = root.querySelector("[data-turntable-value]");
       if (!image) return;
 
-      const blend = image.cloneNode();
-      blend.removeAttribute("data-turntable-image");
-      blend.removeAttribute("data-hero-image");
-      blend.removeAttribute("data-footer-image");
-      blend.classList.add("turntable-blend");
-      blend.setAttribute("aria-hidden", "true");
-      blend.alt = "";
-      image.insertAdjacentElement("afterend", blend);
-
       let frames = [image.getAttribute("src")].filter(Boolean);
       let angle = Number(root.dataset.turnAngle || 0);
       let pointerId = null;
       let startX = 0;
       let startAngle = angle;
+      let lastFrameIndex = -1;
+      let applyFrame = 0;
       const preload = (src) => {
         const frame = new Image();
         frame.decoding = "async";
         frame.src = src;
       };
-      const syncAppearance = () => {
-        const filter = image.style.getPropertyValue("--drone-filter");
-        blend.style.setProperty("--drone-filter", filter || "none");
-      };
       const apply = () => {
         angle = ((angle % 360) + 360) % 360;
         const frameCount = Math.max(1, frames.length);
-        const position = angle / (360 / frameCount);
-        const baseIndex = Math.floor(position) % frameCount;
-        const nextIndex = (baseIndex + 1) % frameCount;
-        const phase = position - Math.floor(position);
-        const easedPhase = phase * phase * (3 - 2 * phase);
-        if (image.getAttribute("src") !== frames[baseIndex]) image.src = frames[baseIndex];
-        if (blend.getAttribute("src") !== frames[nextIndex]) blend.src = frames[nextIndex];
-        blend.style.opacity = frameCount > 1 ? String(easedPhase) : "0";
-        syncAppearance();
+        const frameIndex = Math.round(angle / (360 / frameCount)) % frameCount;
+        if (frameIndex !== lastFrameIndex) {
+          image.src = frames[frameIndex];
+          lastFrameIndex = frameIndex;
+        }
         root.dataset.turnAngle = String(Math.round(angle));
         if (label) label.textContent = `${Math.round(angle)}°`;
+      };
+      const scheduleApply = () => {
+        if (applyFrame) return;
+        applyFrame = requestAnimationFrame(() => {
+          applyFrame = 0;
+          apply();
+        });
       };
       const rotate = (delta) => {
         angle += delta;
@@ -199,8 +196,8 @@
         frames = cleanFrames.length ? cleanFrames : [image.getAttribute("src")].filter(Boolean);
         frames.forEach(preload);
         image.alt = altText || image.alt;
-        blend.alt = "";
         angle = 0;
+        lastFrameIndex = -1;
         apply();
       };
 
@@ -215,10 +212,15 @@
       zone.addEventListener("pointermove", (event) => {
         if (pointerId !== event.pointerId) return;
         angle = startAngle + (event.clientX - startX) * .64;
-        apply();
+        scheduleApply();
       });
       const stop = (event) => {
         if (pointerId !== event.pointerId) return;
+        if (applyFrame) {
+          cancelAnimationFrame(applyFrame);
+          applyFrame = 0;
+          apply();
+        }
         pointerId = null;
         root.classList.remove("is-dragging");
       };
@@ -341,22 +343,15 @@
     }
   });
 
-  // Ненавязчивая «живая» атмосфера без сдвига дрона и без влияния на компоновку.
+  // Статичный атмосферный свет: без тяжёлых перерасчётов на каждом движении мыши.
   const ambientHero = document.querySelector(".home-hero");
   if (ambientHero && !reduceMotion && matchMedia("(pointer:fine)").matches) {
     const glow = document.createElement("span");
     glow.className = "ambient-pointer";
     glow.setAttribute("aria-hidden", "true");
     ambientHero.prepend(glow);
-    let pointerFrame = 0;
-    ambientHero.addEventListener("pointermove", (event) => {
-      cancelAnimationFrame(pointerFrame);
-      pointerFrame = requestAnimationFrame(() => {
-        const bounds = ambientHero.getBoundingClientRect();
-        ambientHero.style.setProperty("--pointer-x", `${((event.clientX - bounds.left) / bounds.width) * 100}%`);
-        ambientHero.style.setProperty("--pointer-y", `${((event.clientY - bounds.top) / bounds.height) * 100}%`);
-      });
-    }, { passive: true });
+    ambientHero.style.setProperty("--pointer-x", "50%");
+    ambientHero.style.setProperty("--pointer-y", "43%");
   }
 
   let scrollFrame = 0;
@@ -494,7 +489,6 @@
 
   let index = Math.max(0, ids.indexOf(slider.dataset.initialModel || "ultra"));
   let swapTimer;
-  let activeViewTransition;
   const stageImage = slider.querySelector("[data-hero-image]");
   const title = slider.querySelector("[data-hero-title]");
   const tagline = slider.querySelector("[data-hero-tagline]");
@@ -506,12 +500,6 @@
 
   tabsRoot.innerHTML = ids.map((id) => `<a class="home-tab" data-product-tab="${id}" href="${products[id].page}"><span>${products[id].name}</span><i>↗</i></a>`).join("");
   const tabs = [...tabsRoot.querySelectorAll("[data-product-tab]")];
-  ids.forEach((id) => {
-    (products[id].views || [products[id].image]).forEach((src) => {
-      const preload = new Image();
-      preload.src = src;
-    });
-  });
 
   const applyProduct = (item) => {
     const color = item.colors[0];
@@ -530,7 +518,11 @@
       tab.classList.toggle("is-active", selected);
       if (selected) {
         tab.setAttribute("aria-current", "true");
-        tab.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "nearest", inline: "center" });
+        const centeredLeft = tab.offsetLeft - (tabsRoot.clientWidth - tab.offsetWidth) / 2;
+        tabsRoot.scrollTo({
+          left: Math.max(0, centeredLeft),
+          behavior: reduceMotion ? "auto" : "smooth"
+        });
       } else tab.removeAttribute("aria-current");
     });
     turntable?.mdrTurntable?.setFrames(item.views || [item.image], item.imageAlt);
@@ -545,23 +537,15 @@
     const item = products[ids[index]];
     const direction = requestedDirection || (index > previousIndex ? "next" : "prev");
     clearTimeout(swapTimer);
-    if (!reduceMotion && supportsViewTransitions) {
-      activeViewTransition?.skipTransition?.();
-      document.documentElement.dataset.slideDirection = direction;
-      const transition = document.startViewTransition(() => applyProduct(item));
-      activeViewTransition = transition;
-      transition.finished.finally(() => {
-        if (activeViewTransition !== transition) return;
-        delete document.documentElement.dataset.slideDirection;
-        activeViewTransition = null;
-      });
-      return;
-    }
+    document.documentElement.dataset.slideDirection = direction;
     stageImage.classList.add("is-changing");
     swapTimer = setTimeout(() => {
       applyProduct(item);
-      stageImage.classList.remove("is-changing");
-    }, reduceMotion ? 0 : 150);
+      requestAnimationFrame(() => {
+        stageImage.classList.remove("is-changing");
+        delete document.documentElement.dataset.slideDirection;
+      });
+    }, reduceMotion ? 0 : 90);
   };
 
   slider.querySelectorAll("[data-direction]").forEach((button) => button.addEventListener("click", () => {

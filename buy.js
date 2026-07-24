@@ -141,7 +141,6 @@
       selectedExtras = new Set();
       updateUrl();
       render();
-      window.scrollTo({ top: 0, behavior: "smooth" });
     }));
     root.querySelectorAll("[data-color]").forEach((button) => button.addEventListener("click", () => {
       selectedColor = button.dataset.color;
