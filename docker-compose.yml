@@ -1,0 +1,41 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: mdr
+      POSTGRES_USER: mdr
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - mdr_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mdr -d mdr"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgresql://mdr:${POSTGRES_PASSWORD}@postgres:5432/mdr
+      DATABASE_SSL: "false"
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      TELEGRAM_BOT_USERNAME: Mdr_dronsbot
+      TELEGRAM_WEBHOOK_SECRET: ${TELEGRAM_WEBHOOK_SECRET}
+      TELEGRAM_ADMIN_USERNAME: assapproccky
+      TELEGRAM_ADMIN_DISPLAY_NAME: 2Much4U nnga
+      AUTO_SETUP_TELEGRAM_WEBHOOK: "true"
+      JWT_SECRET: ${JWT_SECRET}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+
+volumes:
+  mdr_postgres_data:

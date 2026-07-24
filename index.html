@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="MDR — десять профессиональных дронов для съёмки, инспекций, картографии, спасения и специальных задач." />
+    <title>MDR — профессиональные дроны</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23030405'/%3E%3Ctext x='16' y='21' fill='white' font-family='Arial' font-size='13' font-weight='700' text-anchor='middle'%3EM%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css?v=14" />
+    <link rel="stylesheet" href="overrides.css?v=14" />
+    <link rel="stylesheet" href="evolution.css?v=14" />
+    <link rel="stylesheet" href="studio.css?v=14" />
+  </head>
+  <body class="home-page">
+    <div class="reading-progress" aria-hidden="true"><i data-reading-progress></i></div>
+    <header class="site-header">
+      <a class="brand" href="index.html">MDR</a>
+      <nav class="main-nav" aria-label="Основная навигация">
+        <a href="#catalog" data-mega-toggle>Модели <span class="nav-chevron">⌄</span></a>
+        <a href="about.html">О компании</a>
+        <a href="contacts.html">Контакты</a>
+      </nav>
+      <a class="header-order button button--accent" href="buy.html">Собрать свой MDR</a>
+      <button class="menu-toggle" type="button" aria-label="Открыть меню" aria-expanded="false"><i></i><i></i></button>
+    </header>
+
+    <main>
+      <section class="home-hero" data-product-slider data-initial-model="ultra">
+        <div class="home-hero__copy">
+          <span class="hero-counter" data-hero-counter>02 / 10</span>
+          <h1 data-hero-title>MDR ULTRA <span class="title-accent">LIGHT</span></h1>
+          <p class="hero-lead" data-hero-tagline>Быстрее, легче, эффективнее.</p>
+          <div class="hero-actions">
+            <a class="button button--light" data-hero-buy href="buy.html?model=ultra">Оформить предзаказ</a>
+            <a class="button button--ghost" data-hero-detail href="ultra-light.html">Подробнее</a>
+          </div>
+        </div>
+
+        <div class="home-stage" data-turntable>
+          <div class="home-stage__zone" data-turntable-zone tabindex="0" aria-label="Поверните дрон перетаскиванием">
+            <span class="home-stage__light home-stage__light--top" aria-hidden="true"></span>
+            <img class="drone-image" data-hero-image data-turntable-image src="assets/turntable/ultra-front-v1.png" alt="Профессиональный квадрокоптер MDR Ultra Light" />
+            <div class="stage-ring" aria-hidden="true"><i></i><b></b></div>
+          </div>
+          <div class="turntable-controls turntable-controls--hero">
+            <button type="button" data-turn-left aria-label="Повернуть влево">↶</button>
+            <button type="button" data-turn-reset><span data-turntable-value>0°</span> / 360°</button>
+            <button type="button" data-turn-right aria-label="Повернуть вправо">↷</button>
+          </div>
+        </div>
+
+        <div class="slider-arrows">
+          <button type="button" data-direction="prev" aria-label="Предыдущая модель">←</button>
+          <button type="button" data-direction="next" aria-label="Следующая модель">→</button>
+        </div>
+
+        <nav class="home-tabs" id="catalog" aria-label="Десять моделей MDR"></nav>
+      </section>
+
+      <section class="studio-manifesto" aria-labelledby="manifesto-title">
+        <div class="studio-manifesto__number" aria-hidden="true">/01</div>
+        <div class="studio-manifesto__grid wrap">
+          <p class="studio-chapter" data-reveal><span>/01</span> Компания</p>
+          <h2 id="manifesto-title" data-reveal>Мы создаём не просто дроны.<br /><em>Мы проектируем уверенность в воздухе.</em></h2>
+          <div class="studio-manifesto__copy" data-reveal>
+            <p>MDR объединяет инженерию, визуальный дизайн и реальный сценарий полёта в одну понятную систему.</p>
+            <a href="about.html" data-cursor="ОТКРЫТЬ">О компании <span>↗</span></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="model-sequence" id="models" aria-labelledby="models-title">
+        <div class="model-sequence__head wrap">
+          <p class="studio-chapter" data-reveal><span>/02</span> Модельный ряд</p>
+          <div data-reveal>
+            <h2 id="models-title">Десять характеров.<br />Одна система MDR.</h2>
+            <p>Каждая глава — отдельный инструмент: свой цвет, динамика, назначение и точные характеристики.</p>
+          </div>
+        </div>
+        <div class="model-sequence__list" data-model-sequence></div>
+      </section>
+
+      <section class="mission-gallery" aria-labelledby="mission-title">
+        <div class="mission-gallery__head wrap" data-reveal>
+          <div>
+            <p class="studio-chapter"><span>/03</span> MDR в действии</p>
+            <h2 id="mission-title">Три оригинала.<br />Девять настоящих миссий.</h2>
+          </div>
+          <div class="mission-gallery__tools">
+            <div class="mission-filters" aria-label="Перейти к кадрам модели">
+              <button type="button" data-gallery-model="heavy">Heavy</button>
+              <button class="is-active" type="button" data-gallery-model="ultra">Ultra Light</button>
+              <button type="button" data-gallery-model="fast">Super Fast</button>
+            </div>
+            <div class="mission-arrows" aria-label="Прокрутка галереи">
+              <button type="button" data-gallery-prev aria-label="Предыдущие карточки">←</button>
+              <button type="button" data-gallery-next aria-label="Следующие карточки">→</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mission-rail" data-mission-rail tabindex="0" aria-label="Фотографии дронов MDR в работе">
+          <article class="mission-card" data-action-card data-model="heavy" data-panel="1" data-reveal>
+            <div class="mission-card__visual" role="img" aria-label="MDR Heavy инспектирует ветрогенератор"></div>
+            <div class="mission-card__meta"><span>MDR Heavy · 01</span><h3>Энергия под контролем</h3><p>Инспекция ветровой установки без остановки объекта.</p></div>
+          </article>
+          <article class="mission-card" data-action-card data-model="heavy" data-panel="2" data-reveal>
+            <div class="mission-card__visual" role="img" aria-label="MDR Heavy выполняет горную картографию"></div>
+            <div class="mission-card__meta"><span>MDR Heavy · 02</span><h3>Карта сложного рельефа</h3><p>Тяжёлая камера и стабильная платформа над горной долиной.</p></div>
+          </article>
+          <article class="mission-card" data-action-card data-model="heavy" data-panel="3" data-reveal>
+            <div class="mission-card__visual" role="img" aria-label="MDR Heavy инспектирует мост ночью"></div>
+            <div class="mission-card__meta"><span>MDR Heavy · 03</span><h3>Ночная инфраструктура</h3><p>Точная работа рядом с крупными инженерными конструкциями.</p></div>
+          </article>
+          <article class="mission-card" data-action-card data-model="ultra" data-panel="1" data-reveal>
+            <div class="mission-card__visual" role="img" aria-label="MDR Ultra Light снимает побережье"></div>
+            <div class="mission-card__meta"><span>MDR Ultra Light · 01</span><h3>Береговая линия</h3><p>Быстрый запуск и чистый кадр над труднодоступным побережьем.</p></div>
+          </article>
+          <article class="mission-card" data-action-card data-model="ultra" data-panel="2" data-reveal>
+            <div class="mission-card__visual" role="img" aria-label="MDR Ultra Light выполняет лесную инспекцию"></div>
+            <div class="mission-card__meta"><span>MDR Ultra Light · 02</span><h3>Точный маршрут</h3><p>Компактная платформа уверенно работает между препятствиями.</p></div>
+          </article>
+          <article class="mission-card" data-action-card data-model="ultra" data-panel="3" data-reveal>
+            <div class="mission-card__visual" role="img" aria-label="MDR Ultra Light снимает современную архитектуру"></div>
+            <div class="mission-card__meta"><span>MDR Ultra Light · 03</span><h3>Городская геометрия</h3><p>Плавная съёмка фасадов в мягком свете синего часа.</p></div>
+          </article>
+          <article class="mission-card" data-action-card data-model="fast" data-panel="1" data-reveal>
+            <div class="mission-card__visual" role="img" aria-label="MDR Super Fast летит через каньон"></div>
+            <div class="mission-card__meta"><span>MDR Super Fast · 01</span><h3>Скорость в рельефе</h3><p>Чёткая траектория в узком пространстве и на высокой скорости.</p></div>
+          </article>
+          <article class="mission-card" data-action-card data-model="fast" data-panel="2" data-reveal>
+            <div class="mission-card__visual" role="img" aria-label="MDR Super Fast следует вдоль побережья"></div>
+            <div class="mission-card__meta"><span>MDR Super Fast · 02</span><h3>Динамическое сопровождение</h3><p>Стабильное изображение при быстром изменении маршрута.</p></div>
+          </article>
+          <article class="mission-card" data-action-card data-model="fast" data-panel="3" data-reveal>
+            <div class="mission-card__visual" role="img" aria-label="MDR Super Fast летит рядом со скоростным поездом ночью"></div>
+            <div class="mission-card__meta"><span>MDR Super Fast · 03</span><h3>Ночной темп</h3><p>Низкая задержка и уверенная ориентация в сложном свете.</p></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="studio-cta" aria-labelledby="studio-cta-title">
+        <div class="studio-cta__orb" aria-hidden="true"></div>
+        <div class="wrap studio-cta__inner">
+          <p class="studio-chapter" data-reveal><span>/04</span> Следующий шаг</p>
+          <h2 id="studio-cta-title" data-reveal>Какая миссия<br />будет вашей?</h2>
+          <div class="studio-cta__actions" data-reveal>
+            <p>Соберите конфигурацию или оставьте заявку — она сохранится в закрытой админке MDR.</p>
+            <a class="studio-round-link" href="buy.html" data-cursor="СОБРАТЬ"><span>Собрать MDR</span><i>↗</i></a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div><a class="brand" href="index.html">MDR</a><p>Десять профессиональных систем для точных решений в воздухе.</p></div>
+      <div><p class="footer-label">Связь</p><a href="mailto:itaci3367@gmail.com">itaci3367@gmail.com</a><a href="tel:+998910018172">+998 91 001 81 72</a><a href="contacts.html">Контакты и команда</a></div>
+      <div><p class="footer-label">Навигация</p><a href="#catalog" data-mega-toggle>Модели</a><a href="buy.html">Конфигуратор</a><a href="about.html">О компании</a><a href="admin.html">Админка заявок</a></div>
+      <small>© 2026 MDR.</small>
+    </footer>
+
+    <dialog class="order-dialog" id="order-dialog">
+      <button class="dialog-close" type="button" data-dialog-close aria-label="Закрыть">×</button>
+      <p class="kicker">Заявка на MDR</p><h2>Обсудим вашу миссию.</h2>
+      <form id="order-form">
+        <label>Имя<input name="name" required placeholder="Как к вам обращаться?" /></label>
+        <label>Телефон<input name="phone" required inputmode="tel" placeholder="+998 90 123 45 67" /></label>
+        <label>Комментарий<textarea name="comment" rows="3" maxlength="1500" placeholder="Какой дрон или задача вас интересует?"></textarea></label>
+        <button class="button button--accent" type="submit">Отправить заявку</button>
+        <output id="form-message" role="status"></output>
+      </form>
+    </dialog>
+    <script src="products.js?v=14"></script>
+    <script src="app.js?v=14"></script>
+    <script src="studio.js?v=14"></script>
+  </body>
+</html>
