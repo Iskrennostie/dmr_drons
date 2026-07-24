@@ -122,17 +122,17 @@
     addEventListener("pointerup", () => cursor.classList.remove("is-pressed"));
 
     document.addEventListener("pointerover", (event) => {
-      const interactive = event.target.closest("[data-cursor], [data-turntable-zone], a, button, input, textarea");
+      const interactive = event.target.closest("[data-cursor], [data-turntable-zone], a, button, input, textarea, select");
       if (!interactive) return;
       const label = interactive.dataset.cursor
         || (interactive.hasAttribute("data-turntable-zone") ? "ВРАЩАТЬ" : "")
-        || (interactive.matches("input,textarea") ? "ВВОД" : "");
+        || (interactive.matches("input,textarea,select") ? "ВВОД" : "");
       cursor.querySelector("span").textContent = label;
       cursor.classList.toggle("has-label", Boolean(label));
       cursor.classList.add("is-active");
     });
     document.addEventListener("pointerout", (event) => {
-      const interactive = event.target.closest("[data-cursor], [data-turntable-zone], a, button, input, textarea");
+      const interactive = event.target.closest("[data-cursor], [data-turntable-zone], a, button, input, textarea, select");
       if (!interactive || interactive.contains(event.relatedTarget)) return;
       cursor.classList.remove("is-active", "has-label");
       cursor.querySelector("span").textContent = "";

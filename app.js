@@ -250,6 +250,17 @@
       orderDialog.setAttribute("aria-labelledby", dialogTitle.id);
     }
     const form = orderDialog.querySelector("#order-form");
+    const makeRequestId = () => globalThis.crypto?.randomUUID?.()
+      || `mdr-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    const ensureHidden = (name, value = "") => {
+      if (!form || form.elements[name]) return form?.elements[name];
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = name;
+      input.value = value;
+      form.prepend(input);
+      return input;
+    };
     if (form && !form.elements.comment) {
       const label = document.createElement("label");
       label.innerHTML = 'Комментарий<textarea name="comment" rows="3" maxlength="1500" placeholder="Расскажите о задаче или удобном времени для звонка"></textarea>';
@@ -264,6 +275,20 @@
         : "Консультация по линейке MDR";
       form.prepend(configuration);
     }
+    if (form && !form.elements.email) {
+      const label = document.createElement("label");
+      label.innerHTML = 'Почта (необязательно)<input name="email" type="email" autocomplete="email" placeholder="name@example.com">';
+      form.querySelector("button[type=submit]")?.insertAdjacentElement("beforebegin", label);
+    }
+    if (form && !form.elements.address) {
+      const label = document.createElement("label");
+      label.innerHTML = 'Город или адрес (необязательно)<textarea name="address" rows="2" maxlength="700" placeholder="Куда планируется доставка"></textarea>';
+      form.querySelector("button[type=submit]")?.insertAdjacentElement("beforebegin", label);
+    }
+    ensureHidden("orderType", document.body.classList.contains("buy-page") ? "purchase" : "inquiry");
+    const requestId = ensureHidden("clientRequestId");
+    if (requestId && !requestId.value) requestId.value = makeRequestId();
+    orderDialog.mdrMakeRequestId = makeRequestId;
   }
   document.addEventListener("click", (event) => {
     if (event.target.closest("[data-order-open], [data-open-order]")) {
@@ -273,6 +298,8 @@
         submit.disabled = false;
         submit.textContent = "Отправить заявку";
       }
+      const requestId = form?.elements.clientRequestId;
+      if (requestId && !requestId.value) requestId.value = orderDialog.mdrMakeRequestId?.() || `mdr-${Date.now()}`;
       form?.removeAttribute("aria-busy");
       orderDialog?.classList.remove("is-submitting", "is-success", "has-error");
       const message = form?.querySelector("#form-message");
@@ -314,26 +341,46 @@
 
     try {
       const controller = new AbortController();
-      const timeout = window.setTimeout(() => controller.abort(), 15_000);
+      const wakeMessage = window.setTimeout(() => {
+        if (message.classList.contains("is-pending")) {
+          message.textContent = "Бесплатный сервер просыпается. Данные уже подготовлены — пожалуйста, не закрывайте окно.";
+        }
+      }, 10_000);
+      const timeout = window.setTimeout(() => controller.abort(), 90_000);
       const response = await fetch("/api/orders", {
         method: "POST",
         headers: { "content-type": "application/json", accept: "application/json" },
         body: JSON.stringify(payload),
         signal: controller.signal
-      }).finally(() => window.clearTimeout(timeout));
+      }).finally(() => {
+        window.clearTimeout(timeout);
+        window.clearTimeout(wakeMessage);
+      });
       const result = await response.json().catch(() => ({}));
-      if (!response.ok || !result.ok) throw new Error(result.error || "Сервер временно недоступен.");
+      if (!response.ok || !result.ok) {
+        const fieldMessage = result.fields ? Object.values(result.fields)[0] : "";
+        throw new Error(fieldMessage || result.error || "Сервер временно недоступен.");
+      }
 
       submit.textContent = `Заявка №${result.order.id} принята`;
-      message.textContent = "Спасибо! Заявка сохранена в админке MDR. Почтовое уведомление отправляется владельцу.";
+      message.textContent = result.duplicate
+        ? `Заявка №${result.order.id} уже была сохранена. Повторная запись не создана.`
+        : "Спасибо! Все данные заказа сохранены в админке MDR. Почтовое уведомление отправляется владельцу.";
       message.className = "is-success";
       orderDialog?.classList.add("is-success");
       form.reset();
+      if (form.elements.clientRequestId) form.elements.clientRequestId.value = orderDialog.mdrMakeRequestId?.() || `mdr-${Date.now()}`;
     } catch (error) {
       const offline = !navigator.onLine;
       submit.disabled = false;
       submit.textContent = "Повторить отправку";
-      message.innerHTML = `${offline ? "Нет соединения с интернетом." : "Не удалось отправить заявку."} Попробуйте ещё раз или свяжитесь напрямую: <a href="tel:+998910018172">+998 91 001 81 72</a> · <a href="mailto:itaci3367@gmail.com">itaci3367@gmail.com</a>`;
+      const timedOut = error.name === "AbortError";
+      const reason = offline
+        ? "Нет соединения с интернетом."
+        : timedOut
+          ? "Сервер не успел ответить. Можно безопасно нажать повторно — дубль не создастся."
+          : error.message || "Не удалось отправить заявку.";
+      message.innerHTML = `${reason} Если ошибка повторится: <a href="tel:+998910018172">+998 91 001 81 72</a> · <a href="mailto:itaci3367@gmail.com">itaci3367@gmail.com</a>`;
       message.className = "is-error";
       orderDialog?.classList.add("has-error");
       console.error("[order]", error);

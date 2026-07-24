@@ -168,6 +168,18 @@
       const hidden = document.querySelector("#order-configuration");
       if (summary) summary.textContent = selection;
       if (hidden) hidden.value = selection;
+      const values = {
+        "#order-product-id": model.id,
+        "#order-product-name": model.name,
+        "#order-color-name": color.name,
+        "#order-package-name": pack.name,
+        "#order-selected-options": JSON.stringify(extras.map(({ id, name, add }) => ({ id, name, add }))),
+        "#order-total-price": String(total)
+      };
+      Object.entries(values).forEach(([selector, value]) => {
+        const field = document.querySelector(selector);
+        if (field) field.value = value;
+      });
     });
 
     window.MDR_INIT_TURNTABLES?.(root);

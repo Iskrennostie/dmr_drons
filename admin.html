@@ -9,10 +9,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="style.css?v=15" />
-    <link rel="stylesheet" href="overrides.css?v=15" />
-    <link rel="stylesheet" href="evolution.css?v=15" />
-    <link rel="stylesheet" href="studio.css?v=15" />
+    <link rel="stylesheet" href="style.css?v=16" />
+    <link rel="stylesheet" href="overrides.css?v=16" />
+    <link rel="stylesheet" href="evolution.css?v=16" />
+    <link rel="stylesheet" href="studio.css?v=16" />
   </head>
   <body class="admin-page">
     <header class="site-header site-header--solid">
@@ -55,10 +55,18 @@
         </div>
         <div class="admin-status" data-admin-status role="status"></div>
         <div class="admin-order-list" data-admin-order-list></div>
+        <section class="admin-reviews" aria-labelledby="admin-reviews-title">
+          <div class="admin-reviews__head">
+            <div><p class="studio-chapter"><span>/REVIEWS</span> Модерация</p><h2 id="admin-reviews-title">Отзывы покупателей</h2></div>
+            <span>Публикуются только одобренные записи</span>
+          </div>
+          <div class="admin-status" data-admin-review-status role="status"></div>
+          <div class="admin-review-list" data-admin-review-list></div>
+        </section>
       </section>
     </main>
 
-    <script src="admin.js?v=15"></script>
-    <script src="studio.js?v=15"></script>
+    <script src="admin.js?v=16"></script>
+    <script src="studio.js?v=16"></script>
   </body>
 </html>
