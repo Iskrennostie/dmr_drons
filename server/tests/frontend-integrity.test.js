@@ -24,7 +24,7 @@ test("all HTML pages use the current asset version and email contact", async () 
   for (const filename of htmlFiles) {
     const html = await readFile(path.join(root, filename), "utf8");
     assert.doesNotMatch(html, /\?v=1[23]/);
-    assert.match(html, /\?v=14/);
+    assert.match(html, /\?v=16/);
   }
   const contacts = await readFile(path.join(root, "contacts.html"), "utf8");
   assert.match(contacts, /itaci3367@gmail\.com/);
@@ -41,4 +41,16 @@ test("admin inbox and studio motion assets are present", async () => {
   await access(path.join(root, "admin.js"));
   await access(path.join(root, "studio.css"));
   await access(path.join(root, "studio.js"));
+  await access(path.join(root, "reviews.html"));
+  await access(path.join(root, "reviews.js"));
+  await access(path.join(root, "assets", "mdr-supply-director-v1.png"));
+});
+
+test("purchase form keeps structured buyer and configuration fields", async () => {
+  const buy = await readFile(path.join(root, "buy.html"), "utf8");
+  for (const field of ["email", "address", "productId", "productName", "colorName", "packageName", "selectedOptions", "totalPrice", "clientRequestId"]) {
+    assert.match(buy, new RegExp(`name="${field}"`));
+  }
+  const app = await readFile(path.join(root, "app.js"), "utf8");
+  assert.match(app, /90_000/);
 });
