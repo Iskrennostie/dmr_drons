@@ -37,19 +37,29 @@ const statusLabel = {
 
 const orderText = (order) => {
   const comment = order.comment || "Без комментария";
+  const options = Array.isArray(order.selected_options)
+    ? order.selected_options.map((option) => option.name).filter(Boolean).join(", ")
+    : "";
   return [
     `<b>Заявка №${order.id}</b>`,
     "",
     `<b>Статус:</b> ${statusLabel[order.status] || order.status}`,
     `<b>Имя:</b> ${escapeHtml(order.name)}`,
     `<b>Телефон:</b> <code>${escapeHtml(order.phone)}</code>`,
+    order.email ? `<b>Почта:</b> ${escapeHtml(order.email)}` : null,
+    order.address ? `<b>Адрес:</b> ${escapeHtml(order.address)}` : null,
+    order.product_name ? `<b>Дрон:</b> ${escapeHtml(order.product_name)}` : null,
+    order.color_name ? `<b>Цвет:</b> ${escapeHtml(order.color_name)}` : null,
+    order.package_name ? `<b>Комплектация:</b> ${escapeHtml(order.package_name)}` : null,
+    options ? `<b>Опции:</b> ${escapeHtml(options)}` : null,
+    order.total_price != null ? `<b>Итого:</b> ${new Intl.NumberFormat("ru-RU").format(order.total_price)} у.е.` : null,
     `<b>Комментарий:</b> ${escapeHtml(comment)}`,
     "",
     `<b>Конфигурация:</b>`,
     escapeHtml(order.configuration),
     "",
     `<i>${new Date(order.created_at).toLocaleString("ru-RU", { timeZone: "Asia/Tashkent" })}</i>`
-  ].join("\n");
+  ].filter(Boolean).join("\n");
 };
 
 const orderKeyboard = (orderId, status = "new") => ({

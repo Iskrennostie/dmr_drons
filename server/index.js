@@ -8,6 +8,7 @@ import { closeDatabase, databaseStatus } from "./db.js";
 import { drainPendingEmails } from "./email.js";
 import { adminRouter } from "./routes/admin.js";
 import { ordersRouter } from "./routes/orders.js";
+import { reviewsRouter } from "./routes/reviews.js";
 import { telegramRouter } from "./routes/telegram.js";
 import { configureTelegramWebhook, drainPendingNotifications } from "./telegram.js";
 
@@ -58,6 +59,7 @@ app.get("/api/health", async (_request, response) => {
 });
 
 app.use("/api/orders", ordersRouter);
+app.use("/api/reviews", reviewsRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/telegram", telegramRouter);
 

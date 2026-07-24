@@ -8,6 +8,30 @@ const escapeHtml = (value) => String(value ?? "")
   .replaceAll('"', "&quot;")
   .replaceAll("'", "&#039;");
 
+const money = (value) => Number.isFinite(Number(value))
+  ? new Intl.NumberFormat("ru-RU").format(Number(value))
+  : "";
+
+const orderRows = (order) => {
+  const options = Array.isArray(order.selected_options) ? order.selected_options : [];
+  const rows = [
+    ["Имя", escapeHtml(order.name)],
+    ["Телефон", `<a href="tel:${escapeHtml(order.phone)}" style="color:#8fd5dd">${escapeHtml(order.phone)}</a>`],
+    order.email ? ["Почта", `<a href="mailto:${escapeHtml(order.email)}" style="color:#8fd5dd">${escapeHtml(order.email)}</a>`] : null,
+    order.address ? ["Адрес / город", escapeHtml(order.address)] : null,
+    order.product_name ? ["Дрон", escapeHtml(order.product_name)] : null,
+    order.color_name ? ["Цвет", escapeHtml(order.color_name)] : null,
+    order.package_name ? ["Комплектация", escapeHtml(order.package_name)] : null,
+    options.length ? ["Опции", options.map((option) => `${escapeHtml(option.name)}${option.add ? ` (+${money(option.add)} у.е.)` : ""}`).join("<br>")] : null,
+    order.total_price != null ? ["Итоговая цена", `<strong style="font-size:18px">${money(order.total_price)} у.е.</strong>`] : null,
+    ["Конфигурация", escapeHtml(order.configuration)]
+  ].filter(Boolean);
+
+  return rows.map(([label, value]) => (
+    `<tr><td style="width:34%;padding:13px 10px 13px 0;border-top:1px solid #283438;color:#879397;vertical-align:top">${label}</td><td style="padding:13px 0;border-top:1px solid #283438;text-align:right;font-weight:600;line-height:1.5">${value}</td></tr>`
+  )).join("");
+};
+
 const orderHtml = (order) => `
 <!doctype html>
 <html lang="ru">
@@ -17,9 +41,7 @@ const orderHtml = (order) => `
         <p style="margin:0 0 20px;color:#8fd5dd;font-size:11px;letter-spacing:2px;text-transform:uppercase">MDR / новая заявка</p>
         <h1 style="margin:0 0 28px;font-size:34px;line-height:1">Заявка №${escapeHtml(order.id)}</h1>
         <table role="presentation" style="width:100%;border-collapse:collapse;color:#ecf3f2">
-          <tr><td style="padding:13px 0;border-top:1px solid #283438;color:#879397">Имя</td><td style="padding:13px 0;border-top:1px solid #283438;text-align:right;font-weight:bold">${escapeHtml(order.name)}</td></tr>
-          <tr><td style="padding:13px 0;border-top:1px solid #283438;color:#879397">Телефон</td><td style="padding:13px 0;border-top:1px solid #283438;text-align:right"><a href="tel:${escapeHtml(order.phone)}" style="color:#8fd5dd">${escapeHtml(order.phone)}</a></td></tr>
-          <tr><td style="padding:13px 0;border-top:1px solid #283438;color:#879397">Конфигурация</td><td style="padding:13px 0;border-top:1px solid #283438;text-align:right">${escapeHtml(order.configuration)}</td></tr>
+          ${orderRows(order)}
         </table>
         <div style="margin-top:24px;padding:20px;background:#0b1012;color:#b5c0c2;line-height:1.65">
           <strong style="display:block;margin-bottom:8px;color:#ecf3f2">Комментарий</strong>
