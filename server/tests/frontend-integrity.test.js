@@ -24,7 +24,7 @@ test("all HTML pages use the current asset version and email contact", async () 
   for (const filename of htmlFiles) {
     const html = await readFile(path.join(root, filename), "utf8");
     assert.doesNotMatch(html, /\?v=(?:1[236])/);
-    assert.match(html, /\?v=17/);
+    assert.match(html, /\?v=18/);
   }
   const contacts = await readFile(path.join(root, "contacts.html"), "utf8");
   assert.match(contacts, /itaci3367@gmail\.com/);
@@ -59,15 +59,31 @@ test("purchase form keeps structured buyer and configuration fields", async () =
   const studio = await readFile(path.join(root, "studio.js"), "utf8");
   const studioCss = await readFile(path.join(root, "studio.css"), "utf8");
   assert.match(studio, /dialog\[open\]/);
-  assert.match(studio, /host\.append\(cursor\)/);
-  assert.match(studioCss, /dialog > \.studio-cursor/);
-  assert.match(studioCss, /z-index: 2147483647/);
+  assert.match(studio, /has-native-dialog-cursor/);
+  assert.match(studio, /is-suspended/);
+  assert.doesNotMatch(studio, /host\.append\(cursor\)/);
+  assert.match(studioCss, /body\.has-studio-cursor:has\(dialog\[open\]\)/);
+  assert.match(studioCss, /cursor: text !important/);
+  assert.match(studioCss, /cursor: pointer !important/);
 });
 
 test("email provider calls have a bounded timeout", async () => {
   const email = await readFile(path.join(root, "server", "email.js"), "utf8");
   assert.match(email, /EMAIL_TIMEOUT_MS = 20_000/);
   assert.match(email, /AbortSignal\.timeout\(EMAIL_TIMEOUT_MS\)/);
+});
+
+test("vinext and Cloudflare use one synchronous App Router configuration", async () => {
+  const viteConfig = await readFile(path.join(root, "vite.config.ts"), "utf8");
+  assert.match(viteConfig, /import vinext from "vinext"/);
+  assert.match(viteConfig, /import \{ cloudflare \} from "@cloudflare\/vite-plugin"/);
+  assert.match(viteConfig, /vinext\(\)/);
+  assert.match(viteConfig, /name: "rsc"/);
+  assert.match(viteConfig, /childEnvironments: \["ssr"\]/);
+  assert.match(viteConfig, /name: "mdr-drone-studio"/);
+  assert.match(viteConfig, /compatibility_date: "2026-07-25"/);
+  assert.doesNotMatch(viteConfig, /defineConfig\(async/);
+  assert.doesNotMatch(viteConfig, /import\s+rsc\s+from/);
 });
 
 test("order retries stay idempotent on the server", async () => {

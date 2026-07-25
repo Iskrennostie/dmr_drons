@@ -118,9 +118,10 @@ body {
   box-shadow: 0 0 0 3px rgba(111, 224, 234, .65);
 }
 
-dialog > .studio-cursor {
-  position: fixed;
-  z-index: 2147483647;
+.studio-cursor.is-suspended,
+body.has-studio-cursor:has(dialog[open]) > .studio-cursor {
+  visibility: hidden;
+  opacity: 0 !important;
 }
 
 @media (pointer: fine) and (prefers-reduced-motion: no-preference) {
@@ -131,6 +132,31 @@ dialog > .studio-cursor {
   body.has-studio-cursor textarea,
   body.has-studio-cursor select,
   body.has-studio-cursor [data-turntable-zone] { cursor: none; }
+
+  body.has-studio-cursor.has-native-dialog-cursor,
+  body.has-studio-cursor:has(dialog[open]),
+  body.has-studio-cursor.has-native-dialog-cursor dialog,
+  body.has-studio-cursor.has-native-dialog-cursor dialog *,
+  body.has-studio-cursor:has(dialog[open]) dialog,
+  body.has-studio-cursor:has(dialog[open]) dialog * {
+    cursor: default !important;
+  }
+
+  body.has-studio-cursor.has-native-dialog-cursor dialog input,
+  body.has-studio-cursor.has-native-dialog-cursor dialog textarea,
+  body.has-studio-cursor:has(dialog[open]) dialog input,
+  body.has-studio-cursor:has(dialog[open]) dialog textarea {
+    cursor: text !important;
+  }
+
+  body.has-studio-cursor.has-native-dialog-cursor dialog button,
+  body.has-studio-cursor.has-native-dialog-cursor dialog a,
+  body.has-studio-cursor.has-native-dialog-cursor dialog select,
+  body.has-studio-cursor:has(dialog[open]) dialog button,
+  body.has-studio-cursor:has(dialog[open]) dialog a,
+  body.has-studio-cursor:has(dialog[open]) dialog select {
+    cursor: pointer !important;
+  }
 }
 
 .button,
