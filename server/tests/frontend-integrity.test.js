@@ -23,8 +23,8 @@ test("all HTML pages use the current asset version and email contact", async () 
   assert.ok(htmlFiles.length >= 9);
   for (const filename of htmlFiles) {
     const html = await readFile(path.join(root, filename), "utf8");
-    assert.doesNotMatch(html, /\?v=1[23]/);
-    assert.match(html, /\?v=16/);
+    assert.doesNotMatch(html, /\?v=(?:1[236])/);
+    assert.match(html, /\?v=17/);
   }
   const contacts = await readFile(path.join(root, "contacts.html"), "utf8");
   assert.match(contacts, /itaci3367@gmail\.com/);
@@ -44,6 +44,7 @@ test("admin inbox and studio motion assets are present", async () => {
   await access(path.join(root, "reviews.html"));
   await access(path.join(root, "reviews.js"));
   await access(path.join(root, "assets", "mdr-supply-director-v1.png"));
+  await access(path.join(root, "assets", "mdr-owner-director-v3.jpg"));
 });
 
 test("purchase form keeps structured buyer and configuration fields", async () => {
@@ -52,5 +53,49 @@ test("purchase form keeps structured buyer and configuration fields", async () =
     assert.match(buy, new RegExp(`name="${field}"`));
   }
   const app = await readFile(path.join(root, "app.js"), "utf8");
-  assert.match(app, /90_000/);
+  assert.match(app, /ORDER_MAX_ATTEMPTS = 3/);
+  assert.match(app, /ORDER_FIRST_TIMEOUT_MS = 90_000/);
+  assert.doesNotMatch(app, /message\.innerHTML = `\$\{reason\}/);
+  const studio = await readFile(path.join(root, "studio.js"), "utf8");
+  const studioCss = await readFile(path.join(root, "studio.css"), "utf8");
+  assert.match(studio, /dialog\[open\]/);
+  assert.match(studio, /host\.append\(cursor\)/);
+  assert.match(studioCss, /dialog > \.studio-cursor/);
+  assert.match(studioCss, /z-index: 2147483647/);
+});
+
+test("email provider calls have a bounded timeout", async () => {
+  const email = await readFile(path.join(root, "server", "email.js"), "utf8");
+  assert.match(email, /EMAIL_TIMEOUT_MS = 20_000/);
+  assert.match(email, /AbortSignal\.timeout\(EMAIL_TIMEOUT_MS\)/);
+});
+
+test("order retries stay idempotent on the server", async () => {
+  const route = await readFile(path.join(root, "server", "routes", "orders.js"), "utf8");
+  assert.match(route, /WHERE client_request_id = \$1 LIMIT 1/);
+  assert.match(route, /ON CONFLICT \(client_request_id\)/);
+  assert.match(route, /duplicate: true/);
+});
+
+test("demo review cards are explicitly labelled and never mixed with verified reviews", async () => {
+  const reviewsHtml = await readFile(path.join(root, "reviews.html"), "utf8");
+  const reviewsJs = await readFile(path.join(root, "reviews.js"), "utf8");
+  const expectedNames = [
+    "Исмаилова Юлиана",
+    "Мамедов Теймур",
+    "Нуруллаев Абу-Суфен",
+    "Собиржонов Умид",
+    "Султанова Шахзода",
+    "Тен Виктория",
+    "Чаплыгина Варвара",
+    "Югай Анастасия",
+    "Ташпулатова Самира",
+    "Рузимахов Абдулрауф",
+    "Джураев Данияр",
+    "Губайдулин Таймас"
+  ];
+  assert.match(reviewsHtml, /демонстрационные примеры/i);
+  assert.match(reviewsHtml, /data-demo-review-list/);
+  assert.match(reviewsJs, /review-card--demo/);
+  for (const name of expectedNames) assert.match(reviewsJs, new RegExp(name));
 });
