@@ -96,6 +96,18 @@
     document.body.append(cursor);
     document.body.classList.add("has-studio-cursor");
 
+    const syncCursorLayer = () => {
+      const dialogs = [...document.querySelectorAll("dialog[open]")];
+      const host = dialogs.at(-1) || document.body;
+      if (cursor.parentElement !== host) host.append(cursor);
+    };
+    const dialogObserver = new MutationObserver(syncCursorLayer);
+    document.querySelectorAll("dialog").forEach((dialog) => {
+      dialogObserver.observe(dialog, { attributes: true, attributeFilter: ["open"] });
+      dialog.addEventListener("close", syncCursorLayer);
+      dialog.addEventListener("cancel", () => requestAnimationFrame(syncCursorLayer));
+    });
+
     let targetX = 0;
     let targetY = 0;
     let cursorFrame = 0;
@@ -137,6 +149,7 @@
       cursor.classList.remove("is-active", "has-label");
       cursor.querySelector("span").textContent = "";
     });
+    syncCursorLayer();
   }
 
   reveal();

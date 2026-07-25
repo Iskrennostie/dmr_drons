@@ -118,6 +118,11 @@ body {
   box-shadow: 0 0 0 3px rgba(111, 224, 234, .65);
 }
 
+dialog > .studio-cursor {
+  position: fixed;
+  z-index: 2147483647;
+}
+
 @media (pointer: fine) and (prefers-reduced-motion: no-preference) {
   body.has-studio-cursor,
   body.has-studio-cursor a,
@@ -1183,6 +1188,51 @@ body {
 .review-form output.is-success { color: #8ee0b2; }
 .review-form output.is-error { color: #ffaaaa; }
 
+.demo-reviews {
+  padding-top: 20px;
+  padding-bottom: 145px;
+}
+.demo-reviews__head {
+  display: grid;
+  grid-template-columns: 1fr minmax(280px, .55fr);
+  gap: 8vw;
+  align-items: end;
+  margin-bottom: 55px;
+  padding-top: 70px;
+  border-top: 1px solid rgba(255,255,255,.12);
+}
+.demo-reviews__head h2 {
+  margin: 28px 0 0;
+  color: #edf4f4;
+  font-size: clamp(46px, 6vw, 86px);
+  line-height: .9;
+  letter-spacing: -.075em;
+}
+.demo-reviews__head > p {
+  margin: 0;
+  color: #8e9a9d;
+  font-size: 12px;
+  line-height: 1.75;
+}
+.review-card--demo { position: relative; }
+.review-card--demo::after {
+  position: absolute;
+  top: 54px;
+  right: 27px;
+  padding: 5px 7px;
+  border: 1px solid rgba(134,220,228,.26);
+  color: #82d8e0;
+  font-size: 8px;
+  letter-spacing: .12em;
+  content: "ДЕМО";
+}
+.review-card__score {
+  margin-left: 9px;
+  color: #a8b6b8;
+  font-size: 10px;
+  letter-spacing: 0;
+}
+
 .supply-director {
   display: grid;
   grid-template-columns: minmax(310px, .8fr) 1.2fr;
@@ -1243,6 +1293,7 @@ body {
   .reviews-hero { min-height: auto; gap: 60px; padding-top: 165px; }
   .review-list { grid-template-columns: 1fr 1fr; }
   .supply-director__photo { min-height: 620px; }
+  .demo-reviews__head { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 760px) {

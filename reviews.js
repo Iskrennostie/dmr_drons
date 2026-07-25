@@ -2,11 +2,26 @@
   const products = window.MDR_PRODUCTS || {};
   const ids = window.MDR_MODEL_ORDER || Object.keys(products);
   const list = document.querySelector("[data-review-list]");
+  const demoList = document.querySelector("[data-demo-review-list]");
   const count = document.querySelector("[data-review-count]");
   const form = document.querySelector("[data-review-form]");
   const message = document.querySelector("[data-review-message]");
   const productSelect = document.querySelector("[data-review-product]");
   const stars = [...document.querySelectorAll("[data-rating]")];
+  const demoReviews = [
+    { name: "Исмаилова Юлиана", productId: "ultra", rating: 5, comment: "Пример: лёгкая платформа быстро готовится к выезду и уверенно держит кадр при осмотре объекта." },
+    { name: "Мамедов Теймур", productId: "heavy", rating: 4.8, comment: "Пример: запас тяги и стабильность особенно заметны при работе с тяжёлой камерой и дополнительными модулями." },
+    { name: "Нуруллаев Абу-Суфен", productId: "fast", rating: 4.9, comment: "Пример: резкая реакция на управление помогает быстро пройти маршрут и вернуться с понятным результатом." },
+    { name: "Собиржонов Умид", productId: "night", rating: 4.7, comment: "Пример: ночная система даёт спокойную ориентацию в кадре и полезную детализацию на слабо освещённой площадке." },
+    { name: "Султанова Шахзода", productId: "arctic", rating: 4.9, comment: "Пример: предсказуемое управление и защищённая конструкция подходят для холодной и ветреной погоды." },
+    { name: "Тен Виктория", productId: "rescue", rating: 5, comment: "Пример: понятная комплектация позволяет быстро подготовить аппарат к поисковой или спасательной миссии." },
+    { name: "Чаплыгина Варвара", productId: "aqua", rating: 4.6, comment: "Пример: платформа уверенно работает над водой и помогает внимательно осматривать труднодоступные участки." },
+    { name: "Югай Анастасия", productId: "terra", rating: 4.8, comment: "Пример: съёмка полей становится системной — проще сравнивать участки и фиксировать изменения." },
+    { name: "Ташпулатова Самира", productId: "steel", rating: 4.9, comment: "Пример: точная геометрия и стабильный маршрут дают хорошую основу для цифровой модели объекта." },
+    { name: "Рузимахов Абдулрауф", productId: "ember", rating: 4.7, comment: "Пример: скоростной вылет и компактная подготовка особенно полезны, когда решение нужно принять сразу." },
+    { name: "Джураев Данияр", productId: "ultra", rating: 4.8, comment: "Пример: удобный кейс и небольшой вес делают систему практичной для регулярных выездных инспекций." },
+    { name: "Губайдулин Таймас", productId: "heavy", rating: 5, comment: "Пример: промышленная платформа ощущается надёжно и сохраняет стабильность с профессиональным подвесом." }
+  ];
 
   const escapeHtml = (value) => String(value ?? "")
     .replaceAll("&", "&amp;")
@@ -44,6 +59,20 @@
         <div class="review-card__stars" aria-label="${rating} из 5">${"★".repeat(rating)}<i>${"★".repeat(5 - rating)}</i></div>
         <blockquote>${escapeHtml(review.comment)}</blockquote>
         <footer><strong>${escapeHtml(review.name)}</strong><span>${escapeHtml(review.product_name || products[review.product_id]?.name || "MDR")}</span></footer>
+      </article>`;
+    }).join("");
+  };
+
+  const renderDemoReviews = () => {
+    if (!demoList) return;
+    demoList.innerHTML = demoReviews.map((review, index) => {
+      const score = Number(review.rating).toFixed(1);
+      const fullStars = Math.floor(review.rating);
+      return `<article class="review-card review-card--demo">
+        <header><span>/${String(index + 1).padStart(2, "0")}</span><span>пример сценария</span></header>
+        <div class="review-card__stars" aria-label="${score} из 5">${"★".repeat(fullStars)}<i>${"★".repeat(5 - fullStars)}</i><b class="review-card__score">${score}</b></div>
+        <blockquote>${escapeHtml(review.comment)}</blockquote>
+        <footer><strong>${escapeHtml(review.name)}</strong><span>${escapeHtml(products[review.productId]?.name || "MDR")}</span></footer>
       </article>`;
     }).join("");
   };
@@ -98,5 +127,6 @@
     }
   });
 
+  renderDemoReviews();
   void loadReviews();
 })();
