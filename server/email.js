@@ -1,6 +1,8 @@
 import { config } from "./config.js";
 import { query } from "./db.js";
 
+const EMAIL_TIMEOUT_MS = 20_000;
+
 const escapeHtml = (value) => String(value ?? "")
   .replaceAll("&", "&amp;")
   .replaceAll("<", "&lt;")
@@ -65,7 +67,8 @@ const sendWithResend = async (order) => {
       to: [config.orderNotificationEmail],
       subject: `MDR — новая заявка №${order.id} от ${order.name}`,
       html: orderHtml(order)
-    })
+    }),
+    signal: AbortSignal.timeout(EMAIL_TIMEOUT_MS)
   });
   const result = await response.json().catch(() => ({}));
   if (!response.ok) {
