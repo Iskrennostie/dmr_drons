@@ -4,6 +4,12 @@
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const money = window.MDR_MONEY || ((value) => new Intl.NumberFormat("ru-RU").format(value));
   const pageFor = window.MDR_MODEL_PAGE || ((id) => `model.html?model=${id}`);
+  const ORDER_MAX_ATTEMPTS = 3;
+  const ORDER_FIRST_TIMEOUT_MS = 90_000;
+  const ORDER_RETRY_TIMEOUT_MS = 45_000;
+  const ORDER_FIRST_WAKE_DELAY_MS = 8_000;
+  const ORDER_RETRY_WAKE_DELAY_MS = 2_000;
+  const ORDER_RETRY_BACKOFF_MS = 900;
 
   const setTheme = (product, color = product.colors?.[0]) => {
     const accent = color?.ui || color?.hex || product.accent;
@@ -339,28 +345,63 @@
     message.textContent = "Сохраняем заявку в админке и отправляем уведомление на почту.";
     message.className = "is-pending";
 
-    try {
-      const controller = new AbortController();
-      const wakeMessage = window.setTimeout(() => {
-        if (message.classList.contains("is-pending")) {
-          message.textContent = "Бесплатный сервер просыпается. Данные уже подготовлены — пожалуйста, не закрывайте окно.";
+    const sendOrder = async () => {
+      const retryableStatuses = new Set([408, 425, 429, 502, 503, 504]);
+      let lastError = null;
+
+      for (let attempt = 1; attempt <= ORDER_MAX_ATTEMPTS; attempt += 1) {
+        const controller = new AbortController();
+        const timeout = window.setTimeout(
+          () => controller.abort(),
+          attempt === 1 ? ORDER_FIRST_TIMEOUT_MS : ORDER_RETRY_TIMEOUT_MS
+        );
+        const wakeMessage = window.setTimeout(() => {
+          if (message.classList.contains("is-pending")) {
+            message.textContent = attempt === 1
+              ? "Бесплатный сервер просыпается. Заявка не потеряется — пожалуйста, не закрывайте окно."
+              : `Восстанавливаем соединение · попытка ${attempt} из ${ORDER_MAX_ATTEMPTS}.`;
+          }
+        }, attempt === 1 ? ORDER_FIRST_WAKE_DELAY_MS : ORDER_RETRY_WAKE_DELAY_MS);
+
+        try {
+          const response = await fetch("/api/orders", {
+            method: "POST",
+            headers: { "content-type": "application/json", accept: "application/json" },
+            body: JSON.stringify(payload),
+            signal: controller.signal,
+            cache: "no-store"
+          });
+          const contentType = response.headers.get("content-type") || "";
+          const result = contentType.includes("application/json")
+            ? await response.json().catch(() => ({}))
+            : {};
+
+          if (response.ok && result.ok) return result;
+
+          const fieldMessage = result.fields ? Object.values(result.fields)[0] : "";
+          const error = new Error(fieldMessage || result.error || "Сервер запускается и пока не принял заявку.");
+          error.retryable = retryableStatuses.has(response.status) || !contentType.includes("application/json");
+          throw error;
+        } catch (error) {
+          lastError = error;
+          const networkFailure = error.name === "AbortError" || error instanceof TypeError;
+          const canRetry = attempt < ORDER_MAX_ATTEMPTS
+            && navigator.onLine
+            && (networkFailure || error.retryable);
+          if (!canRetry) throw error;
+          message.textContent = `Сервер отвечает медленно. Повторяем безопасно · попытка ${attempt + 1} из ${ORDER_MAX_ATTEMPTS}.`;
+          await new Promise((resolve) => window.setTimeout(resolve, ORDER_RETRY_BACKOFF_MS * attempt));
+        } finally {
+          window.clearTimeout(timeout);
+          window.clearTimeout(wakeMessage);
         }
-      }, 10_000);
-      const timeout = window.setTimeout(() => controller.abort(), 90_000);
-      const response = await fetch("/api/orders", {
-        method: "POST",
-        headers: { "content-type": "application/json", accept: "application/json" },
-        body: JSON.stringify(payload),
-        signal: controller.signal
-      }).finally(() => {
-        window.clearTimeout(timeout);
-        window.clearTimeout(wakeMessage);
-      });
-      const result = await response.json().catch(() => ({}));
-      if (!response.ok || !result.ok) {
-        const fieldMessage = result.fields ? Object.values(result.fields)[0] : "";
-        throw new Error(fieldMessage || result.error || "Сервер временно недоступен.");
       }
+
+      throw lastError || new Error("Не удалось получить ответ сервера.");
+    };
+
+    try {
+      const result = await sendOrder();
 
       submit.textContent = `Заявка №${result.order.id} принята`;
       message.textContent = result.duplicate
@@ -380,7 +421,14 @@
         : timedOut
           ? "Сервер не успел ответить. Можно безопасно нажать повторно — дубль не создастся."
           : error.message || "Не удалось отправить заявку.";
-      message.innerHTML = `${reason} Если ошибка повторится: <a href="tel:+998910018172">+998 91 001 81 72</a> · <a href="mailto:itaci3367@gmail.com">itaci3367@gmail.com</a>`;
+      message.textContent = `${reason} Если ошибка повторится: `;
+      const phoneLink = document.createElement("a");
+      phoneLink.href = "tel:+998910018172";
+      phoneLink.textContent = "+998 91 001 81 72";
+      const emailLink = document.createElement("a");
+      emailLink.href = "mailto:itaci3367@gmail.com";
+      emailLink.textContent = "itaci3367@gmail.com";
+      message.append(phoneLink, document.createTextNode(" · "), emailLink);
       message.className = "is-error";
       orderDialog?.classList.add("has-error");
       console.error("[order]", error);
