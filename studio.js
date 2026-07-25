@@ -96,16 +96,20 @@
     document.body.append(cursor);
     document.body.classList.add("has-studio-cursor");
 
-    const syncCursorLayer = () => {
-      const dialogs = [...document.querySelectorAll("dialog[open]")];
-      const host = dialogs.at(-1) || document.body;
-      if (cursor.parentElement !== host) host.append(cursor);
+    const syncCursorMode = () => {
+      const hasOpenDialog = Boolean(document.querySelector("dialog[open]"));
+      document.body.classList.toggle("has-native-dialog-cursor", hasOpenDialog);
+      cursor.classList.toggle("is-suspended", hasOpenDialog);
+      if (hasOpenDialog) {
+        cursor.classList.remove("is-visible", "is-active", "has-label", "is-pressed");
+        cursor.querySelector("span").textContent = "";
+      }
     };
-    const dialogObserver = new MutationObserver(syncCursorLayer);
+    const dialogObserver = new MutationObserver(syncCursorMode);
     document.querySelectorAll("dialog").forEach((dialog) => {
       dialogObserver.observe(dialog, { attributes: true, attributeFilter: ["open"] });
-      dialog.addEventListener("close", syncCursorLayer);
-      dialog.addEventListener("cancel", () => requestAnimationFrame(syncCursorLayer));
+      dialog.addEventListener("close", syncCursorMode);
+      dialog.addEventListener("cancel", () => requestAnimationFrame(syncCursorMode));
     });
 
     let targetX = 0;
@@ -118,6 +122,7 @@
     };
 
     addEventListener("pointermove", (event) => {
+      if (document.body.classList.contains("has-native-dialog-cursor")) return;
       targetX = event.clientX;
       targetY = event.clientY;
       if (!cursorFrame) cursorFrame = requestAnimationFrame(paintCursor);
@@ -149,7 +154,7 @@
       cursor.classList.remove("is-active", "has-label");
       cursor.querySelector("span").textContent = "";
     });
-    syncCursorLayer();
+    syncCursorMode();
   }
 
   reveal();
