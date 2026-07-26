@@ -24,7 +24,7 @@ test("all HTML pages use the current asset version and email contact", async () 
   for (const filename of htmlFiles) {
     const html = await readFile(path.join(root, filename), "utf8");
     assert.doesNotMatch(html, /\?v=(?:1[2368])/);
-    assert.match(html, /\?v=19/);
+    assert.match(html, /\?v=20/);
   }
   const contacts = await readFile(path.join(root, "contacts.html"), "utf8");
   assert.match(contacts, /itaci3367@gmail\.com/);
@@ -91,8 +91,19 @@ test("MDR Digital Cockpit contains the requested interactive ecosystem", async (
   assert.match(core, /rtk.*accuracy/s);
   assert.match(core, /configurationUrl/);
   assert.match(css, /--studio-light-x/);
-  assert.match(buy, /cockpit-core\.js\?v=19/);
-  assert.match(buy, /cockpit\.js\?v=19/);
+  assert.match(core, /energy reserve/);
+  assert.doesNotMatch(core, /configuration\.pack\?\.note/);
+  assert.match(buy, /cockpit-core\.js\?v=20/);
+  assert.match(buy, /cockpit\.js\?v=20/);
+});
+
+test("MDR pricing stays within the revised market-oriented range", async () => {
+  const products = await readFile(path.join(root, "products.js"), "utf8");
+  const basePrices = [...products.matchAll(/^\s+price: (\d+),$/gm)].map((match) => Number(match[1]));
+  assert.equal(basePrices.length, 10);
+  assert.ok(Math.min(...basePrices) >= 1_400);
+  assert.ok(Math.max(...basePrices) <= 7_500);
+  assert.doesNotMatch(products, /price: (?:8|9|1[0-9])\d{3},/);
 });
 
 test("AR preview requests the camera only after a user action and cleans it up", async () => {
