@@ -7,12 +7,12 @@
   }[id] || `model.html?model=${id}`);
 
   const commonExtras = {
-    care: { id: "care", name: "MDR Care 24", note: "Приоритетная диагностика и поддержка в течение года", add: 690 },
-    academy: { id: "academy", name: "MDR Academy", note: "Персональный вводный курс для двух операторов", add: 490 },
-    battery: { id: "battery", name: "Energy Reserve", note: "Два дополнительных аккумулятора и зарядная станция", add: 890 },
-    rtk: { id: "rtk", name: "RTK Precision", note: "Сантиметровое позиционирование и наземная метка", add: 1190 },
-    thermal: { id: "thermal", name: "Thermal Vision", note: "Тепловизионный модуль с записью телеметрии", add: 1690 },
-    shield: { id: "shield", name: "Weather Shield", note: "Защита электроники для сложной погоды", add: 790 }
+    care: { id: "care", name: "MDR Care 24", note: "Приоритетная диагностика и поддержка в течение года", add: 190 },
+    academy: { id: "academy", name: "MDR Academy", note: "Персональный вводный курс для двух операторов", add: 150 },
+    battery: { id: "battery", name: "Energy Reserve", note: "Два дополнительных аккумулятора и зарядная станция", add: 390 },
+    rtk: { id: "rtk", name: "RTK Precision", note: "Сантиметровое позиционирование и наземная метка", add: 590 },
+    thermal: { id: "thermal", name: "Thermal Vision", note: "Тепловизионный модуль с записью телеметрии", add: 790 },
+    shield: { id: "shield", name: "Weather Shield", note: "Защита электроники для сложной погоды", add: 240 }
   };
 
   const product = (data) => ({
@@ -40,17 +40,17 @@
       imageAlt: "Тяжёлый промышленный дрон MDR Heavy",
       accent: "#ff8d4b",
       heroAccent: "#ff8d4b",
-      price: 12990,
+      price: 6490,
       stats: [["7,5 кг", "полезная нагрузка"], ["38 мин", "время в воздухе"], ["15 км", "защищённая видеосвязь"]],
       colors: [
         { id: "graphite", name: "Индустриальный графит", hex: "#293039", ui: "#8d9aa6", finish: "Металлик", add: 0, filter: "none" },
-        { id: "orange", name: "Сигнальный оранжевый", hex: "#ef7f3b", ui: "#ff8d4b", finish: "Специальное покрытие", add: 420, filter: "sepia(.52) saturate(1.75) hue-rotate(334deg) brightness(1.08)" },
-        { id: "sand", name: "Пустынный металлик", hex: "#9d8b72", ui: "#c1a780", finish: "Металлик", add: 550, filter: "sepia(.42) saturate(.86) hue-rotate(350deg) brightness(1.14)" }
+        { id: "orange", name: "Сигнальный оранжевый", hex: "#ef7f3b", ui: "#ff8d4b", finish: "Специальное покрытие", add: 110, filter: "sepia(.52) saturate(1.75) hue-rotate(334deg) brightness(1.08)" },
+        { id: "sand", name: "Пустынный металлик", hex: "#9d8b72", ui: "#c1a780", finish: "Металлик", add: 140, filter: "sepia(.42) saturate(.86) hue-rotate(350deg) brightness(1.14)" }
       ],
       packages: [
         { id: "core", name: "Heavy Core", note: "Дрон, 2 аккумулятора, защищённый кейс", add: 0 },
-        { id: "survey", name: "Survey Pro", note: "RTK-модуль, наземная станция и 3 аккумулятора", add: 2490 },
-        { id: "cinema", name: "Cinema Lift", note: "Подвес для тяжёлой камеры и операторский монитор", add: 3190 }
+        { id: "survey", name: "Survey Pro", note: "RTK-модуль, наземная станция и 3 аккумулятора", add: 890 },
+        { id: "cinema", name: "Cinema Lift", note: "Подвес для тяжёлой камеры и операторский монитор", add: 1090 }
       ],
       extras: [commonExtras.rtk, commonExtras.care, commonExtras.shield],
       story: "Выверенная геометрия рамы распределяет тягу по восьми роторам. Широкие опоры стабилизируют систему с крупной камерой или измерительным модулем, а контрастные метки остаются заметны на площадке даже в сложном свете.",
@@ -73,17 +73,17 @@
       imageAlt: "Профессиональный квадрокоптер MDR Ultra Light",
       accent: "#92a7ff",
       heroAccent: "#92a7ff",
-      price: 8990,
+      price: 1890,
       stats: [["3,2 кг", "масса системы"], ["42 мин", "время в воздухе"], ["12 км", "радиус видеосвязи"]],
       colors: [
         { id: "silver", name: "Холодный серебристый", hex: "#b8c3ca", ui: "#aebdff", finish: "Металлик", add: 0, filter: "none" },
-        { id: "graphite", name: "Глубокий графит", hex: "#293038", ui: "#7f8f9e", finish: "Металлик", add: 290, filter: "grayscale(1) brightness(.66) contrast(1.28)" },
-        { id: "ice", name: "Ледяной синий", hex: "#76a6cc", ui: "#82bff0", finish: "Перламутр", add: 390, filter: "sepia(.2) saturate(1.45) hue-rotate(160deg) brightness(1.05)" }
+        { id: "graphite", name: "Глубокий графит", hex: "#293038", ui: "#7f8f9e", finish: "Металлик", add: 80, filter: "grayscale(1) brightness(.66) contrast(1.28)" },
+        { id: "ice", name: "Ледяной синий", hex: "#76a6cc", ui: "#82bff0", finish: "Перламутр", add: 110, filter: "sepia(.2) saturate(1.45) hue-rotate(160deg) brightness(1.05)" }
       ],
       packages: [
         { id: "core", name: "Ultra Core", note: "Дрон, 2 аккумулятора, компактный кейс", add: 0 },
-        { id: "creator", name: "Creator Kit", note: "4K-камера, ND-фильтры и монитор 7 дюймов", add: 1290 },
-        { id: "inspection", name: "Inspection Kit", note: "Тепловизионный модуль и 3 аккумулятора", add: 2290 }
+        { id: "creator", name: "Creator Kit", note: "4K-камера, ND-фильтры и монитор 7 дюймов", add: 390 },
+        { id: "inspection", name: "Inspection Kit", note: "Тепловизионный модуль и 3 аккумулятора", add: 790 }
       ],
       extras: [commonExtras.battery, commonExtras.academy, commonExtras.thermal],
       story: "Лёгкий каркас и низкий центр тяжести делают Ultra Light точным в управлении. Рама рассчитана на частую транспортировку, а камера на трёхосевом подвесе удерживает кадр спокойным даже при активной траектории.",
@@ -106,17 +106,17 @@
       imageAlt: "Скоростной дрон MDR Super Fast",
       accent: "#16d7f2",
       heroAccent: "#16d7f2",
-      price: 10490,
+      price: 2290,
       stats: [["145 км/ч", "максимальная скорость"], ["28 мин", "динамический полёт"], ["10 км", "низколатентная связь"]],
       colors: [
         { id: "midnight", name: "Ночной графит", hex: "#141b22", ui: "#5e7180", finish: "Металлик", add: 0, filter: "none" },
-        { id: "electric", name: "Электрик", hex: "#05cce8", ui: "#16d7f2", finish: "Специальное покрытие", add: 450, filter: "saturate(1.35) brightness(1.07)" },
-        { id: "polar", name: "Полярный белый", hex: "#dce4e7", ui: "#e7f5f7", finish: "Перламутр", add: 350, filter: "grayscale(1) brightness(1.48) contrast(.86)" }
+        { id: "electric", name: "Электрик", hex: "#05cce8", ui: "#16d7f2", finish: "Специальное покрытие", add: 120, filter: "saturate(1.35) brightness(1.07)" },
+        { id: "polar", name: "Полярный белый", hex: "#dce4e7", ui: "#e7f5f7", finish: "Перламутр", add: 90, filter: "grayscale(1) brightness(1.48) contrast(.86)" }
       ],
       packages: [
         { id: "core", name: "Fast Core", note: "Дрон, 3 аккумулятора, транспортный кейс", add: 0 },
-        { id: "pursuit", name: "Pursuit Pack", note: "FPV-монитор, скоростной пульт и 5 аккумуляторов", add: 1790 },
-        { id: "night", name: "Night Watch", note: "Тепловизионный модуль и защищённый дисплей", add: 2690 }
+        { id: "pursuit", name: "Pursuit Pack", note: "FPV-монитор, скоростной пульт и 5 аккумуляторов", add: 390 },
+        { id: "night", name: "Night Watch", note: "Тепловизионный модуль и защищённый дисплей", add: 690 }
       ],
       extras: [commonExtras.battery, commonExtras.care, commonExtras.thermal],
       story: "Вытянутый корпус и короткие аэродинамичные лучи помогают Super Fast сохранять уверенность на резких манёврах. Голубая световая линия облегчает визуальную ориентацию команды на площадке.",
@@ -139,17 +139,17 @@
       imageAlt: "Фиолетовый дрон наблюдения MDR Night Falcon",
       accent: "#a674ff",
       heroAccent: "#a674ff",
-      price: 11890,
+      price: 3190,
       stats: [["29 дБ", "режим Silent Watch"], ["48 мин", "патрульный полёт"], ["4K + IR", "двойная оптика"]],
       colors: [
         { id: "violet", name: "Ночной фиолетовый", hex: "#673b99", ui: "#a674ff", finish: "Металлик", add: 0, filter: "none" },
-        { id: "indigo", name: "Индиго спектр", hex: "#273b8f", ui: "#718cff", finish: "Перламутр", add: 480, filter: "hue-rotate(42deg) saturate(1.15)" },
-        { id: "shadow", name: "Теневая сталь", hex: "#262832", ui: "#8d91a5", finish: "Матовый", add: 390, filter: "grayscale(.82) brightness(.72) contrast(1.18)" }
+        { id: "indigo", name: "Индиго спектр", hex: "#273b8f", ui: "#718cff", finish: "Перламутр", add: 130, filter: "hue-rotate(42deg) saturate(1.15)" },
+        { id: "shadow", name: "Теневая сталь", hex: "#262832", ui: "#8d91a5", finish: "Матовый", add: 100, filter: "grayscale(.82) brightness(.72) contrast(1.18)" }
       ],
       packages: [
         { id: "watch", name: "Silent Watch", note: "Дрон, IR-камера, 3 аккумулятора", add: 0 },
-        { id: "perimeter", name: "Perimeter Pro", note: "Тепловизор, автопатруль и защищённая станция", add: 2190 },
-        { id: "command", name: "Night Command", note: "Две камеры, прожектор и операторский терминал", add: 3290 }
+        { id: "perimeter", name: "Perimeter Pro", note: "Тепловизор, автопатруль и защищённая станция", add: 690 },
+        { id: "command", name: "Night Command", note: "Две камеры, прожектор и операторский терминал", add: 990 }
       ],
       extras: [commonExtras.thermal, commonExtras.care, commonExtras.shield],
       story: "Кольцевые каналы защищают винты и снижают заметность звука. Фиолетовые контуры можно полностью отключить, а поворотная оптика сохраняет объект в кадре без резких движений корпуса.",
@@ -172,17 +172,17 @@
       imageAlt: "Белый всепогодный дрон MDR Arctic Scout",
       accent: "#d9edf4",
       heroAccent: "#d9edf4",
-      price: 9690,
+      price: 3790,
       stats: [["−30 °C", "холодный запуск"], ["51 мин", "время полёта"], ["2 см", "точность RTK"]],
       colors: [
         { id: "milk", name: "Арктический молочный", hex: "#e9ece7", ui: "#d9edf4", finish: "Перламутр", add: 0, filter: "none" },
-        { id: "iceblue", name: "Ледниковый голубой", hex: "#9fc7d7", ui: "#a9ddf0", finish: "Металлик", add: 430, filter: "sepia(.16) saturate(1.28) hue-rotate(146deg) brightness(.98)" },
-        { id: "titanium", name: "Полярный титан", hex: "#8f9ba2", ui: "#aebbc2", finish: "Металлик", add: 510, filter: "grayscale(.75) brightness(.79) contrast(1.08)" }
+        { id: "iceblue", name: "Ледниковый голубой", hex: "#9fc7d7", ui: "#a9ddf0", finish: "Металлик", add: 110, filter: "sepia(.16) saturate(1.28) hue-rotate(146deg) brightness(.98)" },
+        { id: "titanium", name: "Полярный титан", hex: "#8f9ba2", ui: "#aebbc2", finish: "Металлик", add: 140, filter: "grayscale(.75) brightness(.79) contrast(1.08)" }
       ],
       packages: [
         { id: "scout", name: "Scout Core", note: "Дрон, RTK, 3 зимних аккумулятора", add: 0 },
-        { id: "ice", name: "Ice Survey", note: "Тепловой кейс и геодезическая станция", add: 1890 },
-        { id: "summit", name: "Summit Mapping", note: "Высотомер, лидар и 5 аккумуляторов", add: 2990 }
+        { id: "ice", name: "Ice Survey", note: "Тепловой кейс и геодезическая станция", add: 590 },
+        { id: "summit", name: "Summit Mapping", note: "Высотомер, лидар и 5 аккумуляторов", add: 990 }
       ],
       extras: [commonExtras.rtk, commonExtras.shield, commonExtras.battery],
       story: "Светлый перламутровый корпус меньше нагревается на ярком снегу, а система обогрева поддерживает сенсоры и аккумуляторы в рабочем диапазоне. Шесть роторов дают спокойную посадку на неровной площадке.",
@@ -205,17 +205,17 @@
       imageAlt: "Красный спасательный дрон MDR Rescue One",
       accent: "#ff4e45",
       heroAccent: "#ff4e45",
-      price: 13490,
+      price: 6990,
       stats: [["5 кг", "полезная нагрузка"], ["8 км", "аварийная доставка"], ["120 дБ", "голосовой модуль"]],
       colors: [
         { id: "signal", name: "Сигнальный красный", hex: "#e63f35", ui: "#ff4e45", finish: "Высокая видимость", add: 0, filter: "none" },
-        { id: "bright", name: "Ярко-красный", hex: "#ff1919", ui: "#ff3030", finish: "Специальное покрытие", add: 390, filter: "saturate(1.55) brightness(1.08)" },
-        { id: "rescuewhite", name: "Спасательный белый", hex: "#e6e8e5", ui: "#f4f5f1", finish: "Перламутр", add: 520, filter: "grayscale(.83) brightness(1.32) contrast(.9)" }
+        { id: "bright", name: "Ярко-красный", hex: "#ff1919", ui: "#ff3030", finish: "Специальное покрытие", add: 100, filter: "saturate(1.55) brightness(1.08)" },
+        { id: "rescuewhite", name: "Спасательный белый", hex: "#e6e8e5", ui: "#f4f5f1", finish: "Перламутр", add: 140, filter: "grayscale(.83) brightness(1.32) contrast(.9)" }
       ],
       packages: [
         { id: "first", name: "First Response", note: "Дрон, аптечный контейнер, прожектор", add: 0 },
-        { id: "search", name: "Search Team", note: "Тепловизор, громкая связь и 4 батареи", add: 2390 },
-        { id: "lifeline", name: "Life Line", note: "Сбрасываемый трос, связь и плавучий модуль", add: 3490 }
+        { id: "search", name: "Search Team", note: "Тепловизор, громкая связь и 4 батареи", add: 790 },
+        { id: "lifeline", name: "Life Line", note: "Сбрасываемый трос, связь и плавучий модуль", add: 1090 }
       ],
       extras: [commonExtras.thermal, commonExtras.shield, commonExtras.academy],
       story: "Восемь роторов удерживают платформу при работе с контейнером, а высокие опоры оставляют безопасный зазор для груза. Световые полосы видны сверху и с земли, не перекрывая работу тепловизора.",
@@ -238,17 +238,17 @@
       imageAlt: "Голубой морской дрон MDR Aqua Ray",
       accent: "#49c9f2",
       heroAccent: "#49c9f2",
-      price: 12190,
+      price: 4190,
       stats: [["IP56", "защита корпуса"], ["46 мин", "патрульный полёт"], ["18 м/с", "устойчивость к ветру"]],
       colors: [
         { id: "sky", name: "Лагунный голубой", hex: "#55bfe8", ui: "#49c9f2", finish: "Металлик", add: 0, filter: "none" },
-        { id: "deep", name: "Глубокий океан", hex: "#175b84", ui: "#3d9ed5", finish: "Перламутр", add: 490, filter: "hue-rotate(12deg) saturate(1.28) brightness(.77)" },
-        { id: "foam", name: "Морская пена", hex: "#d9ede9", ui: "#c7f5ee", finish: "Перламутр", add: 540, filter: "grayscale(.45) brightness(1.33) contrast(.86)" }
+        { id: "deep", name: "Глубокий океан", hex: "#175b84", ui: "#3d9ed5", finish: "Перламутр", add: 130, filter: "hue-rotate(12deg) saturate(1.28) brightness(.77)" },
+        { id: "foam", name: "Морская пена", hex: "#d9ede9", ui: "#c7f5ee", finish: "Перламутр", add: 140, filter: "grayscale(.45) brightness(1.33) contrast(.86)" }
       ],
       packages: [
         { id: "coast", name: "Coast Core", note: "Дрон, поляризационная камера, 3 батареи", add: 0 },
-        { id: "harbor", name: "Harbor Scan", note: "Зум-камера, RTK и защитный кейс", add: 1990 },
-        { id: "offshore", name: "Offshore Pro", note: "Радарный маяк, тепловизор и 5 батарей", add: 3190 }
+        { id: "harbor", name: "Harbor Scan", note: "Зум-камера, RTK и защитный кейс", add: 690 },
+        { id: "offshore", name: "Offshore Pro", note: "Радарный маяк, тепловизор и 5 батарей", add: 990 }
       ],
       extras: [commonExtras.shield, commonExtras.rtk, commonExtras.thermal],
       story: "Манта-образный корпус направляет воздушный поток в сторону от оптики. Гидрофобное покрытие защищает линзы от аэрозоля, а яркая голубая поверхность помогает быстро найти аппарат над водой.",
@@ -271,17 +271,17 @@
       imageAlt: "Зелёный агродрон MDR Terra Green",
       accent: "#63d77d",
       heroAccent: "#63d77d",
-      price: 10990,
+      price: 3490,
       stats: [["320 га", "за одну смену"], ["54 мин", "маршрутный полёт"], ["5 каналов", "спектральная камера"]],
       colors: [
         { id: "forest", name: "Лесной металлик", hex: "#27643d", ui: "#63d77d", finish: "Металлик", add: 0, filter: "none" },
-        { id: "sage", name: "Шалфейный металлик", hex: "#7d9879", ui: "#a8c7a2", finish: "Металлик", add: 460, filter: "saturate(.58) brightness(1.15)" },
-        { id: "earth", name: "Земляной графит", hex: "#464b3c", ui: "#8e9678", finish: "Матовый", add: 380, filter: "grayscale(.45) sepia(.18) brightness(.72)" }
+        { id: "sage", name: "Шалфейный металлик", hex: "#7d9879", ui: "#a8c7a2", finish: "Металлик", add: 120, filter: "saturate(.58) brightness(1.15)" },
+        { id: "earth", name: "Земляной графит", hex: "#464b3c", ui: "#8e9678", finish: "Матовый", add: 100, filter: "grayscale(.45) sepia(.18) brightness(.72)" }
       ],
       packages: [
         { id: "field", name: "Field Core", note: "Дрон, RGB-камера, 3 аккумулятора", add: 0 },
-        { id: "crop", name: "Crop Vision", note: "5-канальная камера и аналитический модуль", add: 1890 },
-        { id: "farm", name: "Farm Network", note: "RTK-станция, облачный отчёт и 5 батарей", add: 2890 }
+        { id: "crop", name: "Crop Vision", note: "5-канальная камера и аналитический модуль", add: 590 },
+        { id: "farm", name: "Farm Network", note: "RTK-станция, облачный отчёт и 5 батарей", add: 890 }
       ],
       extras: [commonExtras.rtk, commonExtras.battery, commonExtras.academy],
       story: "Шесть роторов дают эффективный крейсерский режим, а зелёный металлик не создаёт лишнего контраста над полем. Камеры RGB и multispectral фиксируют данные в одном маршруте.",
@@ -304,17 +304,17 @@
       imageAlt: "Серый лидарный дрон MDR Steel Surveyor",
       accent: "#aab7c1",
       heroAccent: "#aab7c1",
-      price: 14690,
+      price: 7490,
       stats: [["2,4 млн", "точек в секунду"], ["3 см", "точность модели"], ["44 мин", "время полёта"]],
       colors: [
         { id: "metal", name: "Инженерный металлик", hex: "#747f87", ui: "#aab7c1", finish: "Металлик", add: 0, filter: "none" },
-        { id: "carbon", name: "Карбоновый графит", hex: "#2f3438", ui: "#7f8b94", finish: "Матовый", add: 390, filter: "brightness(.66) contrast(1.18)" },
-        { id: "nickel", name: "Светлый никель", hex: "#c5c8c3", ui: "#d7ddd9", finish: "Перламутр", add: 590, filter: "grayscale(.4) brightness(1.24) contrast(.9)" }
+        { id: "carbon", name: "Карбоновый графит", hex: "#2f3438", ui: "#7f8b94", finish: "Матовый", add: 100, filter: "brightness(.66) contrast(1.18)" },
+        { id: "nickel", name: "Светлый никель", hex: "#c5c8c3", ui: "#d7ddd9", finish: "Перламутр", add: 140, filter: "grayscale(.4) brightness(1.24) contrast(.9)" }
       ],
       packages: [
         { id: "scan", name: "Scan Core", note: "Дрон, RTK, 3 батареи, жёсткий кейс", add: 0 },
-        { id: "lidar", name: "LiDAR Pro", note: "Лидар 360°, базовая станция и ПО", add: 3990 },
-        { id: "twin", name: "Digital Twin", note: "Лидар, 45 Мп камера и рабочая станция", add: 5290 }
+        { id: "lidar", name: "LiDAR Pro", note: "Лидар 360°, базовая станция и ПО", add: 1290 },
+        { id: "twin", name: "Digital Twin", note: "Лидар, 45 Мп камера и рабочая станция", add: 1690 }
       ],
       extras: [commonExtras.rtk, commonExtras.care, commonExtras.battery],
       story: "Силовая рама отделяет вибрации моторов от сенсорного блока. Серый металлик подчёркивает техническую форму, а нижний лидар получает свободный круговой обзор без деталей шасси.",
@@ -337,17 +337,17 @@
       imageAlt: "Ярко-красный скоростной дрон MDR Ember Sprint",
       accent: "#ff3b30",
       heroAccent: "#ff3b30",
-      price: 11390,
+      price: 1490,
       stats: [["178 км/ч", "пиковая скорость"], ["14 мс", "задержка видео"], ["6K", "экшн-камера"]],
       colors: [
         { id: "emberred", name: "Ember Red", hex: "#e9322a", ui: "#ff3b30", finish: "Глянцевый", add: 0, filter: "none" },
-        { id: "crimson", name: "Глубокий кармин", hex: "#801c24", ui: "#dd4655", finish: "Металлик", add: 410, filter: "saturate(1.2) brightness(.68)" },
-        { id: "frost", name: "Frost White", hex: "#e8e8e5", ui: "#f4f4ef", finish: "Перламутр", add: 560, filter: "grayscale(.86) brightness(1.38) contrast(.88)" }
+        { id: "crimson", name: "Глубокий кармин", hex: "#801c24", ui: "#dd4655", finish: "Металлик", add: 100, filter: "saturate(1.2) brightness(.68)" },
+        { id: "frost", name: "Frost White", hex: "#e8e8e5", ui: "#f4f4ef", finish: "Перламутр", add: 140, filter: "grayscale(.86) brightness(1.38) contrast(.88)" }
       ],
       packages: [
         { id: "sprint", name: "Sprint Core", note: "Дрон, FPV-пульт, 4 аккумулятора", add: 0 },
-        { id: "race", name: "Race Pack", note: "FPV-очки, 8 батарей и зарядная станция", add: 1990 },
-        { id: "cinema", name: "Chase Cinema", note: "6K-камера, ND-набор и монитор режиссёра", add: 2690 }
+        { id: "race", name: "Race Pack", note: "FPV-очки, 8 батарей и зарядная станция", add: 390 },
+        { id: "cinema", name: "Chase Cinema", note: "6K-камера, ND-набор и монитор режиссёра", add: 590 }
       ],
       extras: [commonExtras.battery, commonExtras.care, commonExtras.academy],
       story: "Компактный монокок защищает электронику внутри и оставляет винтовые каналы свободными. Низкая камера читает направление движения, а яркий корпус помогает команде видеть аппарат на сложном фоне.",

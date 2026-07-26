@@ -28,8 +28,7 @@
     const source = [
       configuration.pack?.id,
       configuration.pack?.name,
-      configuration.pack?.note,
-      ...(configuration.extras || []).flatMap((item) => [item.id, item.name, item.note])
+      ...(configuration.extras || []).flatMap((item) => [item.id, item.name])
     ].join(" ").toLowerCase();
     return source.includes(token);
   };
@@ -52,7 +51,7 @@
 
   const metricsFor = (configuration = defaultConfiguration()) => {
     const profile = { ...(PROFILES[configuration.id] || PROFILES.ultra) };
-    const battery = hasToken(configuration, "battery") || hasToken(configuration, "аккумулятор");
+    const battery = hasToken(configuration, "battery") || hasToken(configuration, "energy reserve");
     const rtk = hasToken(configuration, "rtk");
     const camera = ["camera", "creator", "cinema", "thermal", "inspection", "zoom", "лидар", "камер"]
       .some((token) => hasToken(configuration, token));

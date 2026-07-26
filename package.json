@@ -1,6 +1,6 @@
 {
   "name": "mdr-drone-studio",
-  "version": "19.0.0",
+  "version": "20.0.0",
   "private": true,
   "engines": {
     "node": ">=22.13.0"
