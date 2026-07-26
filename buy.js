@@ -25,6 +25,16 @@
     history.replaceState({}, "", `buy.html?${query}`);
   };
 
+  const selectModel = (id) => {
+    if (!products[id]) return;
+    selected = id;
+    selectedColor = products[selected].colors[0].id;
+    selectedPackage = products[selected].packages[0].id;
+    selectedExtras = new Set();
+    updateUrl();
+    render();
+  };
+
   const render = () => {
     const { model, color, pack, extras, total } = current();
     const accent = color.ui || color.hex || model.accent;
@@ -135,12 +145,7 @@
       </section>`;
 
     root.querySelectorAll("[data-model]").forEach((button) => button.addEventListener("click", () => {
-      selected = button.dataset.model;
-      selectedColor = products[selected].colors[0].id;
-      selectedPackage = products[selected].packages[0].id;
-      selectedExtras = new Set();
-      updateUrl();
-      render();
+      selectModel(button.dataset.model);
     }));
     root.querySelectorAll("[data-color]").forEach((button) => button.addEventListener("click", () => {
       selectedColor = button.dataset.color;
@@ -184,6 +189,17 @@
 
     window.MDR_INIT_TURNTABLES?.(root);
     root.querySelector("[data-turntable]")?.mdrTurntable?.setFrames(model.views || [model.configImage], `${model.imageAlt} в цвете ${color.name}`);
+    const configuration = {
+      id: model.id,
+      model,
+      color,
+      pack,
+      extras,
+      total,
+      url: window.location.href
+    };
+    window.MDR_ACTIVE_CONFIGURATION = configuration;
+    document.dispatchEvent(new CustomEvent("mdr:configurationchange", { detail: configuration }));
     document.dispatchEvent(new CustomEvent("mdr:productchange", { detail: { id: model.id } }));
   };
 
@@ -193,5 +209,13 @@
   if (products[selected].colors.some((item) => item.id === urlColor)) selectedColor = urlColor;
   if (products[selected].packages.some((item) => item.id === urlPackage)) selectedPackage = urlPackage;
   selectedExtras = new Set(urlExtras.filter((id) => products[selected].extras.some((item) => item.id === id)));
+  document.addEventListener("mdr:selectmodel", (event) => selectModel(event.detail?.id));
+  document.addEventListener("mdr:addextra", (event) => {
+    const id = event.detail?.id;
+    if (!products[selected].extras.some((item) => item.id === id)) return;
+    selectedExtras.add(id);
+    updateUrl();
+    render();
+  });
   render();
 })();

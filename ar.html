@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="MDR AR — примерка профессионального дрона в пространстве через камеру телефона." />
+    <title>MDR AR Mode</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="ar.css?v=19" />
+  </head>
+  <body>
+    <header class="ar-header">
+      <a href="index.html">MDR</a>
+      <div><small>AR MODE</small><b data-ar-model>MDR</b></div>
+      <a data-ar-back href="buy.html">Вернуться</a>
+    </header>
+    <main class="ar-stage">
+      <video data-ar-video autoplay muted playsinline></video>
+      <div class="ar-placeholder" data-ar-placeholder>
+        <p>MDR / SPATIAL PREVIEW</p>
+        <h1>Поставьте дрон<br />в своё пространство.</h1>
+        <span>Камера включается только после вашего нажатия и не отправляет изображение на сервер.</span>
+        <button type="button" data-ar-start>Запустить AR</button>
+      </div>
+      <div class="ar-object" data-ar-object>
+        <span></span>
+        <img data-ar-image alt="" draggable="false" />
+      </div>
+      <div class="ar-reticle" aria-hidden="true"><i></i><i></i></div>
+      <output data-ar-status role="status"></output>
+    </main>
+    <aside class="ar-controls">
+      <label>Размер<input data-ar-scale type="range" min="55" max="150" value="100" /></label>
+      <label>Поворот<input data-ar-rotation type="range" min="-45" max="45" value="0" /></label>
+      <button type="button" data-ar-reset>По центру</button>
+      <button type="button" data-ar-capture>Сохранить кадр</button>
+    </aside>
+    <script src="products.js?v=19"></script>
+    <script src="ar.js?v=19"></script>
+  </body>
+</html>
