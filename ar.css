@@ -1,0 +1,108 @@
+:root { --accent: #92a7ff; color-scheme: dark; }
+* { box-sizing: border-box; }
+html, body { width: 100%; min-width: 320px; min-height: 100%; margin: 0; background: #030607; color: #f2f6f5; font-family: Manrope, Arial, sans-serif; }
+body { min-height: 100dvh; overflow: hidden; }
+button, input { font: inherit; }
+.ar-header {
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  width: 100%;
+  padding: max(18px, env(safe-area-inset-top)) 22px 14px;
+  background: linear-gradient(rgba(2, 5, 6, .86), transparent);
+}
+.ar-header a { color: #f5f8f7; font-weight: 800; font-size: 12px; text-decoration: none; }
+.ar-header > a:first-child { font-size: 22px; }
+.ar-header > a:last-child { justify-self: end; }
+.ar-header div { display: grid; gap: 3px; text-align: center; }
+.ar-header small { color: var(--accent); font-size: 8px; letter-spacing: .15em; }
+.ar-header b { font-size: 10px; }
+.ar-stage { position: relative; width: 100vw; height: 100dvh; overflow: hidden; background: radial-gradient(circle at 50% 45%, #1a2528, #040708 67%); }
+.ar-stage video { width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .5s; }
+body.is-ar-active .ar-stage video { opacity: 1; }
+.ar-placeholder {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  padding: 26px;
+  background: radial-gradient(circle at 50% 48%, rgba(35, 70, 77, .48), transparent 38%);
+  text-align: center;
+  transition: opacity .4s, visibility .4s;
+}
+body.is-ar-active .ar-placeholder { visibility: hidden; opacity: 0; }
+.ar-placeholder p { color: var(--accent); font-size: 9px; font-weight: 800; letter-spacing: .16em; }
+.ar-placeholder h1 { margin: 12px 0 20px; font-size: clamp(37px, 9vw, 76px); line-height: .94; letter-spacing: -4px; }
+.ar-placeholder span { max-width: 480px; color: #8e9a9d; font-size: 12px; line-height: 1.65; }
+.ar-placeholder button,
+.ar-controls button {
+  min-height: 46px;
+  margin-top: 25px;
+  padding: 0 19px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: var(--accent);
+  color: #061012;
+  font-weight: 800;
+  font-size: 11px;
+}
+.ar-object {
+  --ar-x: 50%;
+  --ar-y: 58%;
+  --ar-scale: 1;
+  --ar-rotation: 0deg;
+  position: absolute;
+  z-index: 4;
+  left: var(--ar-x);
+  top: var(--ar-y);
+  width: min(78vw, 760px);
+  height: min(44vw, 410px);
+  transform: translate(-50%, -50%) scale(var(--ar-scale)) rotate(var(--ar-rotation));
+  transform-origin: 50% 74%;
+  transition: filter .2s;
+  touch-action: none;
+  cursor: grab;
+}
+.ar-object:active { cursor: grabbing; }
+.ar-object img { position: relative; z-index: 2; width: 100%; height: 100%; object-fit: contain; filter: var(--drone-filter); user-select: none; pointer-events: none; }
+.ar-object span { position: absolute; z-index: 1; left: 18%; right: 18%; bottom: 10%; height: 16%; border-radius: 50%; background: rgba(2, 4, 5, .44); filter: blur(14px); }
+.ar-reticle { position: absolute; z-index: 2; left: 50%; top: 58%; width: 82px; height: 82px; transform: translate(-50%, -50%); opacity: .5; pointer-events: none; }
+.ar-reticle i { position: absolute; background: var(--accent); }
+.ar-reticle i:first-child { top: 50%; left: 0; width: 100%; height: 1px; }
+.ar-reticle i:last-child { top: 0; left: 50%; width: 1px; height: 100%; }
+.ar-stage output { position: absolute; z-index: 7; left: 20px; right: 20px; bottom: 128px; color: #fff; font-size: 11px; text-align: center; text-shadow: 0 2px 12px #000; }
+.ar-controls {
+  position: fixed;
+  z-index: 8;
+  right: 18px;
+  bottom: max(18px, env(safe-area-inset-bottom));
+  left: 18px;
+  display: grid;
+  grid-template-columns: 1fr 1fr auto auto;
+  gap: 10px;
+  align-items: end;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, .14);
+  background: rgba(5, 10, 12, .82);
+  backdrop-filter: blur(15px);
+}
+.ar-controls label { display: grid; gap: 7px; color: #91a0a3; font-size: 9px; letter-spacing: .1em; }
+.ar-controls input { accent-color: var(--accent); }
+.ar-controls button { min-height: 37px; margin: 0; padding: 0 13px; }
+.ar-controls button:last-child { border-color: rgba(255, 255, 255, .22); background: transparent; color: #fff; }
+@media (max-width: 680px) {
+  .ar-controls { grid-template-columns: 1fr 1fr; }
+  .ar-object { width: 94vw; height: 55vw; }
+  .ar-header { padding-inline: 15px; }
+  .ar-header > a:last-child { font-size: 9px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ar-stage video,
+  .ar-placeholder { transition: none; }
+}

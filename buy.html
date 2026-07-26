@@ -8,10 +8,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="style.css?v=18" />
-    <link rel="stylesheet" href="overrides.css?v=18" />
-    <link rel="stylesheet" href="evolution.css?v=18" />
-    <link rel="stylesheet" href="studio.css?v=18" />
+    <link rel="stylesheet" href="style.css?v=19" />
+    <link rel="stylesheet" href="overrides.css?v=19" />
+    <link rel="stylesheet" href="evolution.css?v=19" />
+    <link rel="stylesheet" href="studio.css?v=19" />
+    <link rel="stylesheet" href="cockpit.css?v=19" />
   </head>
   <body class="buy-page">
     <header class="site-header">
@@ -40,6 +41,7 @@
       <p class="kicker">Заявка на конфигурацию</p>
       <h2>Зафиксируем ваш MDR.</h2>
       <p class="order-selection" id="order-selection"></p>
+      <p class="order-service-status" data-order-service role="status">Сервис заявок подключается автоматически.</p>
       <form id="order-form">
         <input type="hidden" name="configuration" id="order-configuration" />
         <input type="hidden" name="orderType" value="purchase" />
@@ -59,9 +61,12 @@
         <output id="form-message" role="status"></output>
       </form>
     </dialog>
-    <script src="products.js?v=18"></script>
-    <script src="app.js?v=18"></script>
-    <script src="buy.js?v=18"></script>    <script src="studio.js?v=18"></script>
+    <script src="products.js?v=19"></script>
+    <script src="app.js?v=19"></script>
+    <script src="buy.js?v=19"></script>
+    <script src="cockpit-core.js?v=19"></script>
+    <script src="cockpit.js?v=19"></script>
+    <script src="studio.js?v=19"></script>
 
   </body>
 </html>

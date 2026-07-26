@@ -23,8 +23,8 @@ test("all HTML pages use the current asset version and email contact", async () 
   assert.ok(htmlFiles.length >= 9);
   for (const filename of htmlFiles) {
     const html = await readFile(path.join(root, filename), "utf8");
-    assert.doesNotMatch(html, /\?v=(?:1[236])/);
-    assert.match(html, /\?v=18/);
+    assert.doesNotMatch(html, /\?v=(?:1[2368])/);
+    assert.match(html, /\?v=19/);
   }
   const contacts = await readFile(path.join(root, "contacts.html"), "utf8");
   assert.match(contacts, /itaci3367@gmail\.com/);
@@ -55,6 +55,9 @@ test("purchase form keeps structured buyer and configuration fields", async () =
   const app = await readFile(path.join(root, "app.js"), "utf8");
   assert.match(app, /ORDER_MAX_ATTEMPTS = 3/);
   assert.match(app, /ORDER_FIRST_TIMEOUT_MS = 90_000/);
+  assert.match(app, /ORDER_SERVICE_PROBE_ATTEMPTS = 12/);
+  assert.match(app, /fetch\(`\/api\/health\?wake=/);
+  assert.match(app, /await warmOrderService/);
   assert.doesNotMatch(app, /message\.innerHTML = `\$\{reason\}/);
   const studio = await readFile(path.join(root, "studio.js"), "utf8");
   const studioCss = await readFile(path.join(root, "studio.css"), "utf8");
@@ -65,6 +68,43 @@ test("purchase form keeps structured buyer and configuration fields", async () =
   assert.match(studioCss, /body\.has-studio-cursor:has\(dialog\[open\]\)/);
   assert.match(studioCss, /cursor: text !important/);
   assert.match(studioCss, /cursor: pointer !important/);
+});
+
+test("MDR Digital Cockpit contains the requested interactive ecosystem", async () => {
+  const cockpit = await readFile(path.join(root, "cockpit.js"), "utf8");
+  const core = await readFile(path.join(root, "cockpit-core.js"), "utf8");
+  const css = await readFile(path.join(root, "cockpit.css"), "utf8");
+  const buy = await readFile(path.join(root, "buy.html"), "utf8");
+  for (const token of [
+    "Digital Cockpit",
+    "SYSTEM BOOT",
+    "FLIGHT SIMULATOR",
+    "MISSION PLANNER",
+    "AI RECOMMENDATION",
+    "DRONE COMPARISON",
+    "DRONE GARAGE",
+    "CONFIG SHARE",
+    "AR MODE",
+    "DRONE TIMELINE"
+  ]) assert.match(cockpit, new RegExp(token));
+  assert.match(core, /battery.*autonomy/s);
+  assert.match(core, /rtk.*accuracy/s);
+  assert.match(core, /configurationUrl/);
+  assert.match(css, /--studio-light-x/);
+  assert.match(buy, /cockpit-core\.js\?v=19/);
+  assert.match(buy, /cockpit\.js\?v=19/);
+});
+
+test("AR preview requests the camera only after a user action and cleans it up", async () => {
+  const html = await readFile(path.join(root, "ar.html"), "utf8");
+  const script = await readFile(path.join(root, "ar.js"), "utf8");
+  const server = await readFile(path.join(root, "server", "index.js"), "utf8");
+  assert.match(html, /data-ar-start/);
+  assert.match(script, /getUserMedia/);
+  assert.match(script, /NotAllowedError/);
+  assert.match(script, /pagehide/);
+  assert.match(script, /track\.stop\(\)/);
+  assert.match(server, /https:\/\/api\.qrserver\.com/);
 });
 
 test("email provider calls have a bounded timeout", async () => {

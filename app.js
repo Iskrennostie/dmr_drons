@@ -2,6 +2,7 @@
   const products = window.MDR_PRODUCTS || {};
   const ids = window.MDR_MODEL_ORDER || Object.keys(products);
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const finePointer = window.matchMedia("(pointer:fine)").matches;
   const money = window.MDR_MONEY || ((value) => new Intl.NumberFormat("ru-RU").format(value));
   const pageFor = window.MDR_MODEL_PAGE || ((id) => `model.html?model=${id}`);
   const ORDER_MAX_ATTEMPTS = 3;
@@ -9,7 +10,62 @@
   const ORDER_RETRY_TIMEOUT_MS = 45_000;
   const ORDER_FIRST_WAKE_DELAY_MS = 8_000;
   const ORDER_RETRY_WAKE_DELAY_MS = 2_000;
-  const ORDER_RETRY_BACKOFF_MS = 900;
+  const ORDER_RETRY_BACKOFF_MS = 4_000;
+  const ORDER_SERVICE_PROBE_ATTEMPTS = 12;
+  const ORDER_SERVICE_PROBE_TIMEOUT_MS = 5_000;
+  const ORDER_SERVICE_PROBE_DELAY_MS = 2_500;
+  const ORDER_SERVICE_READY_TTL_MS = 10 * 60 * 1_000;
+  let orderServiceReadyAt = 0;
+  let orderServiceWarmPromise = null;
+
+  const wait = (delayMs) => new Promise((resolve) => window.setTimeout(resolve, delayMs));
+
+  const readJsonResponse = async (response) => {
+    const contentType = response.headers.get("content-type") || "";
+    if (!contentType.includes("application/json")) return null;
+    return response.json().catch(() => null);
+  };
+
+  const warmOrderService = async (onProgress = () => {}) => {
+    if (Date.now() - orderServiceReadyAt < ORDER_SERVICE_READY_TTL_MS) return true;
+    if (orderServiceWarmPromise) return orderServiceWarmPromise;
+
+    orderServiceWarmPromise = (async () => {
+      let lastError = null;
+      for (let attempt = 1; attempt <= ORDER_SERVICE_PROBE_ATTEMPTS; attempt += 1) {
+        const controller = new AbortController();
+        const timeout = window.setTimeout(() => controller.abort(), ORDER_SERVICE_PROBE_TIMEOUT_MS);
+        onProgress({ attempt, total: ORDER_SERVICE_PROBE_ATTEMPTS });
+        try {
+          const response = await fetch(`/api/health?wake=${Date.now()}`, {
+            headers: { accept: "application/json" },
+            signal: controller.signal,
+            cache: "no-store"
+          });
+          const result = await readJsonResponse(response);
+          if (response.ok && result?.ok && result.database?.connected) {
+            orderServiceReadyAt = Date.now();
+            return true;
+          }
+          lastError = new Error(result?.error || "Сервис ещё запускается.");
+        } catch (error) {
+          lastError = error;
+        } finally {
+          window.clearTimeout(timeout);
+        }
+        if (attempt < ORDER_SERVICE_PROBE_ATTEMPTS) await wait(ORDER_SERVICE_PROBE_DELAY_MS);
+      }
+      throw new Error(lastError?.name === "AbortError"
+        ? "Сервис заявок запускается дольше обычного. Нажмите повторно через несколько секунд."
+        : "Сервис заявок пока не ответил. Нажмите повторно — выбранная конфигурация сохранена.");
+    })();
+
+    try {
+      return await orderServiceWarmPromise;
+    } finally {
+      orderServiceWarmPromise = null;
+    }
+  };
 
   const setTheme = (product, color = product.colors?.[0]) => {
     const accent = color?.ui || color?.hex || product.accent;
@@ -166,6 +222,7 @@
       let startAngle = angle;
       let lastFrameIndex = -1;
       let applyFrame = 0;
+      let lightFrame = 0;
       const preload = (src) => {
         const frame = new Image();
         frame.decoding = "async";
@@ -216,9 +273,24 @@
         root.classList.add("is-dragging");
       });
       zone.addEventListener("pointermove", (event) => {
+        if (!reduceMotion && finePointer) {
+          cancelAnimationFrame(lightFrame);
+          lightFrame = requestAnimationFrame(() => {
+            const bounds = zone.getBoundingClientRect();
+            const x = Math.max(0, Math.min(100, ((event.clientX - bounds.left) / bounds.width) * 100));
+            const y = Math.max(0, Math.min(100, ((event.clientY - bounds.top) / bounds.height) * 100));
+            root.style.setProperty("--studio-light-x", `${x}%`);
+            root.style.setProperty("--studio-light-y", `${y}%`);
+          });
+        }
         if (pointerId !== event.pointerId) return;
         angle = startAngle + (event.clientX - startX) * .64;
         scheduleApply();
+      });
+      zone.addEventListener("pointerleave", () => {
+        if (pointerId != null) return;
+        root.style.setProperty("--studio-light-x", "50%");
+        root.style.setProperty("--studio-light-y", "34%");
       });
       const stop = (event) => {
         if (pointerId !== event.pointerId) return;
@@ -249,6 +321,7 @@
   initTurntables();
 
   const orderDialog = document.querySelector("#order-dialog");
+  let serviceIndicator = null;
   if (orderDialog) {
     const dialogTitle = orderDialog.querySelector("h2");
     if (dialogTitle) {
@@ -256,6 +329,15 @@
       orderDialog.setAttribute("aria-labelledby", dialogTitle.id);
     }
     const form = orderDialog.querySelector("#order-form");
+    serviceIndicator = orderDialog.querySelector("[data-order-service]");
+    if (!serviceIndicator && form) {
+      serviceIndicator = document.createElement("p");
+      serviceIndicator.className = "order-service-status";
+      serviceIndicator.dataset.orderService = "";
+      serviceIndicator.setAttribute("role", "status");
+      serviceIndicator.textContent = "Сервис заявок подключается автоматически.";
+      form.insertAdjacentElement("beforebegin", serviceIndicator);
+    }
     const makeRequestId = () => globalThis.crypto?.randomUUID?.()
       || `mdr-${Date.now()}-${Math.random().toString(16).slice(2)}`;
     const ensureHidden = (name, value = "") => {
@@ -316,6 +398,17 @@
       if (typeof orderDialog?.showModal === "function") {
         if (!orderDialog.open) orderDialog.showModal();
       } else orderDialog?.setAttribute("open", "");
+      orderDialog?.setAttribute("data-service-state", "warming");
+      if (serviceIndicator) serviceIndicator.textContent = "Проверяем защищённое соединение…";
+      void warmOrderService()
+        .then(() => {
+          orderDialog?.setAttribute("data-service-state", "ready");
+          if (serviceIndicator) serviceIndicator.textContent = "Сервис заявок готов · данные сохранятся в админке.";
+        })
+        .catch(() => {
+          orderDialog?.setAttribute("data-service-state", "waiting");
+          if (serviceIndicator) serviceIndicator.textContent = "Сервер просыпается и будет проверен повторно при отправке.";
+        });
     }
     const close = event.target.closest("[data-dialog-close]");
     if (close) {
@@ -401,6 +494,11 @@
     };
 
     try {
+      await warmOrderService(({ attempt, total }) => {
+        message.textContent = attempt === 1
+          ? "Подключаем защищённый сервис заявок…"
+          : `Сервер просыпается · проверка ${attempt} из ${total}. Конфигурация сохранена в форме.`;
+      });
       const result = await sendOrder();
 
       submit.textContent = `Заявка №${result.order.id} принята`;
@@ -409,6 +507,9 @@
         : "Спасибо! Все данные заказа сохранены в админке MDR. Почтовое уведомление отправляется владельцу.";
       message.className = "is-success";
       orderDialog?.classList.add("is-success");
+      document.dispatchEvent(new CustomEvent("mdr:orderaccepted", {
+        detail: { order: result.order, configuration: payload }
+      }));
       form.reset();
       if (form.elements.clientRequestId) form.elements.clientRequestId.value = orderDialog.mdrMakeRequestId?.() || `mdr-${Date.now()}`;
     } catch (error) {
