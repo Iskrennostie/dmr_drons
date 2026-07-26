@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="description" content="Закрытая админка заявок MDR." />
+    <title>Заявки — MDR Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css?v=20" />
+    <link rel="stylesheet" href="overrides.css?v=20" />
+    <link rel="stylesheet" href="evolution.css?v=20" />
+    <link rel="stylesheet" href="studio.css?v=20" />
+  </head>
+  <body class="admin-page">
+    <header class="site-header site-header--solid">
+      <a class="brand" href="index.html">MDR</a>
+      <nav class="main-nav" aria-label="Навигация администратора">
+        <a href="index.html">Сайт</a>
+        <a href="buy.html">Конфигуратор</a>
+        <a href="contacts.html">Контакты</a>
+      </nav>
+      <button class="admin-signout" type="button" data-admin-signout hidden>Выйти</button>
+    </header>
+
+    <main class="admin-shell">
+      <section class="admin-login" data-admin-login>
+        <p class="studio-chapter"><span>/ADMIN</span> Закрытый доступ</p>
+        <h1>Входящие<br />заявки MDR.</h1>
+        <p>Здесь сохраняются все отправленные формы, их конфигурации и статус доставки уведомления на почту.</p>
+        <form data-admin-login-form>
+          <label>Пароль администратора
+            <input type="password" name="password" required autocomplete="current-password" placeholder="Введите пароль" />
+          </label>
+          <button class="button button--accent" type="submit">Открыть админку</button>
+          <output role="status" data-admin-login-message></output>
+        </form>
+      </section>
+
+      <section class="admin-inbox" data-admin-inbox hidden>
+        <div class="admin-inbox__head">
+          <div>
+            <p class="studio-chapter"><span>/INBOX</span> MDR Admin</p>
+            <h1>Заявки</h1>
+          </div>
+          <button type="button" data-admin-refresh>Обновить ↻</button>
+        </div>
+        <div class="admin-filters" role="tablist" aria-label="Фильтр заявок">
+          <button class="is-active" type="button" data-admin-filter="">Все</button>
+          <button type="button" data-admin-filter="new">Новые</button>
+          <button type="button" data-admin-filter="processed">Обработанные</button>
+          <button type="button" data-admin-filter="deleted">Удалённые</button>
+        </div>
+        <div class="admin-status" data-admin-status role="status"></div>
+        <div class="admin-order-list" data-admin-order-list></div>
+        <section class="admin-reviews" aria-labelledby="admin-reviews-title">
+          <div class="admin-reviews__head">
+            <div><p class="studio-chapter"><span>/REVIEWS</span> Модерация</p><h2 id="admin-reviews-title">Отзывы покупателей</h2></div>
+            <span>Публикуются только одобренные записи</span>
+          </div>
+          <div class="admin-status" data-admin-review-status role="status"></div>
+          <div class="admin-review-list" data-admin-review-list></div>
+        </section>
+      </section>
+    </main>
+
+    <script src="admin.js?v=20"></script>
+    <script src="studio.js?v=20"></script>
+  </body>
+</html>

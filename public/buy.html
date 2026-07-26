@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Интерактивный конфигуратор десяти профессиональных дронов MDR." />
+    <title>Конфигуратор — MDR</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css?v=20" />
+    <link rel="stylesheet" href="overrides.css?v=20" />
+    <link rel="stylesheet" href="evolution.css?v=20" />
+    <link rel="stylesheet" href="studio.css?v=20" />
+    <link rel="stylesheet" href="cockpit.css?v=20" />
+  </head>
+  <body class="buy-page">
+    <header class="site-header">
+      <a class="brand" href="index.html">MDR</a>
+      <nav class="main-nav" aria-label="Основная навигация">
+        <a href="index.html#catalog" data-mega-toggle>Модели <span class="nav-chevron">⌄</span></a>
+        <a href="about.html">О компании</a>
+        <a href="reviews.html">Отзывы</a>
+        <a href="contacts.html">Контакты</a>
+      </nav>
+      <a class="header-order button button--accent" href="#build-summary">Итог</a>
+      <button class="menu-toggle" type="button" aria-label="Открыть меню" aria-expanded="false"><i></i><i></i></button>
+    </header>
+
+    <main id="buy-root"></main>
+
+    <footer class="site-footer">
+      <div><a class="brand" href="index.html">MDR</a><p>Выбранная конфигурация сохраняется в итоговой заявке.</p></div>
+      <div><p class="footer-label">Связь</p><a href="mailto:itaci3367@gmail.com">itaci3367@gmail.com</a><a href="tel:+998910018172">+998 91 001 81 72</a></div>
+      <div><p class="footer-label">Навигация</p><a href="index.html#catalog" data-mega-toggle>Модели</a><a href="reviews.html">Отзывы</a><a href="contacts.html">Консультация</a><a href="about.html">О компании</a></div>
+      <small>© 2026 MDR.</small>
+    </footer>
+
+    <dialog class="order-dialog" id="order-dialog">
+      <button class="dialog-close" type="button" data-dialog-close aria-label="Закрыть">×</button>
+      <p class="kicker">Заявка на конфигурацию</p>
+      <h2>Зафиксируем ваш MDR.</h2>
+      <p class="order-selection" id="order-selection"></p>
+      <p class="order-service-status" data-order-service role="status">Сервис заявок подключается автоматически.</p>
+      <form id="order-form">
+        <input type="hidden" name="configuration" id="order-configuration" />
+        <input type="hidden" name="orderType" value="purchase" />
+        <input type="hidden" name="productId" id="order-product-id" />
+        <input type="hidden" name="productName" id="order-product-name" />
+        <input type="hidden" name="colorName" id="order-color-name" />
+        <input type="hidden" name="packageName" id="order-package-name" />
+        <input type="hidden" name="selectedOptions" id="order-selected-options" />
+        <input type="hidden" name="totalPrice" id="order-total-price" />
+        <input type="hidden" name="clientRequestId" id="order-client-request-id" />
+        <label>Имя<input name="name" required placeholder="Как к вам обращаться?" /></label>
+        <label>Телефон<input name="phone" required inputmode="tel" placeholder="+998 90 123 45 67" /></label>
+        <label>Почта<input name="email" type="email" autocomplete="email" placeholder="name@example.com" /></label>
+        <label>Адрес или город доставки<textarea name="address" rows="2" maxlength="700" required placeholder="Город, район и удобный способ доставки"></textarea></label>
+        <label>Комментарий<textarea name="comment" rows="3" maxlength="1500" placeholder="Расскажите о задаче или удобном времени для звонка"></textarea></label>
+        <button class="button button--accent" type="submit">Отправить заявку</button>
+        <output id="form-message" role="status"></output>
+      </form>
+    </dialog>
+    <script src="products.js?v=20"></script>
+    <script src="app.js?v=20"></script>
+    <script src="buy.js?v=20"></script>
+    <script src="cockpit-core.js?v=20"></script>
+    <script src="cockpit.js?v=20"></script>
+    <script src="studio.js?v=20"></script>
+
+  </body>
+</html>

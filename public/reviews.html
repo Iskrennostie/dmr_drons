@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Отзывы владельцев и операторов о профессиональных дронах MDR." />
+    <title>Отзывы владельцев — MDR</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css?v=20" />
+    <link rel="stylesheet" href="overrides.css?v=20" />
+    <link rel="stylesheet" href="evolution.css?v=20" />
+    <link rel="stylesheet" href="studio.css?v=20" />
+    <link rel="stylesheet" href="cockpit.css?v=20" />
+  </head>
+  <body class="reviews-page">
+    <header class="site-header">
+      <a class="brand" href="index.html">MDR</a>
+      <nav class="main-nav" aria-label="Основная навигация">
+        <a href="index.html#catalog" data-mega-toggle>Модели <span class="nav-chevron">⌄</span></a>
+        <a href="about.html">О компании</a>
+        <a href="reviews.html" aria-current="page">Отзывы</a>
+        <a href="contacts.html">Контакты</a>
+      </nav>
+      <a class="header-order button button--accent" href="buy.html">Собрать свой MDR</a>
+      <button class="menu-toggle" type="button" aria-label="Открыть меню" aria-expanded="false"><i></i><i></i></button>
+    </header>
+
+    <main>
+      <section class="reviews-hero wrap" data-reveal>
+        <div>
+          <p class="studio-chapter"><span>/REVIEWS</span> Опыт операторов</p>
+          <h1>Реальные миссии.<br />Честная обратная связь.</h1>
+        </div>
+        <div>
+          <p>Здесь публикуются только отзывы, прошедшие проверку команды MDR. Новый комментарий сначала попадает в закрытую админку и появляется на странице после модерации.</p>
+          <a href="#leave-review">Оставить отзыв <span>↓</span></a>
+        </div>
+      </section>
+
+      <section class="reviews-board wrap" aria-labelledby="reviews-title">
+        <header data-reveal>
+          <div><p class="kicker">Проверенные отзывы</p><h2 id="reviews-title">Что говорят<br />о MDR.</h2></div>
+          <div class="reviews-board__metric"><strong data-review-count>—</strong><span>опубликовано</span></div>
+        </header>
+        <div class="review-list" data-review-list>
+          <div class="reviews-loading">Загружаем отзывы с сервера…</div>
+        </div>
+      </section>
+
+      <section class="demo-reviews wrap" aria-labelledby="demo-reviews-title">
+        <header class="demo-reviews__head" data-reveal>
+          <div>
+            <p class="studio-chapter"><span>/12</span> Пример наполнения</p>
+            <h2 id="demo-reviews-title">Как выглядят<br />отзывы о миссиях.</h2>
+          </div>
+          <p>Эти двенадцать карточек — демонстрационные примеры оформления, а не подтверждённые отзывы покупателей. Реальные комментарии публикуются отдельно выше только после модерации.</p>
+        </header>
+        <div class="review-list" data-demo-review-list></div>
+      </section>
+
+      <section class="review-compose wrap" id="leave-review" data-reveal>
+        <div class="review-compose__intro">
+          <p class="studio-chapter"><span>/YOUR VOICE</span> Новый отзыв</p>
+          <h2>Расскажите,<br />как прошла миссия.</h2>
+          <p>Не публикуйте телефон, адрес и другие личные данные. После проверки отзыв появится на этой странице.</p>
+        </div>
+        <form class="review-form" data-review-form>
+          <label>Ваше имя
+            <input name="name" required minlength="2" maxlength="120" placeholder="Как вас представить" />
+          </label>
+          <label>Модель MDR
+            <select name="productId" data-review-product required></select>
+          </label>
+          <fieldset>
+            <legend>Оценка</legend>
+            <div class="review-stars" data-review-stars aria-label="Выберите оценку">
+              <button type="button" data-rating="1" aria-label="1 звезда">★</button>
+              <button type="button" data-rating="2" aria-label="2 звезды">★</button>
+              <button type="button" data-rating="3" aria-label="3 звезды">★</button>
+              <button type="button" data-rating="4" aria-label="4 звезды">★</button>
+              <button type="button" data-rating="5" aria-label="5 звёзд">★</button>
+            </div>
+            <input type="hidden" name="rating" value="5" />
+          </fieldset>
+          <label>Комментарий
+            <textarea name="comment" required minlength="10" maxlength="1500" rows="6" placeholder="Задача, впечатления от модели и результат"></textarea>
+          </label>
+          <button class="button button--accent" type="submit">Отправить на модерацию</button>
+          <output data-review-message role="status"></output>
+        </form>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div><a class="brand" href="index.html">MDR</a><p>Профессиональные дроны и честная обратная связь операторов.</p></div>
+      <div><p class="footer-label">Связь</p><a href="mailto:itaci3367@gmail.com">itaci3367@gmail.com</a><a href="tel:+998910018172">+998 91 001 81 72</a></div>
+      <div><p class="footer-label">Навигация</p><a href="index.html#catalog" data-mega-toggle>Модели</a><a href="buy.html">Конфигуратор</a><a href="contacts.html">Команда</a></div>
+      <small>© 2026 MDR.</small>
+    </footer>
+
+    <script src="products.js?v=20"></script>
+    <script src="app.js?v=20"></script>
+    <script src="reviews.js?v=20"></script>
+    <script src="cockpit-core.js?v=20"></script>
+    <script src="cockpit.js?v=20"></script>
+    <script src="studio.js?v=20"></script>
+  </body>
+</html>
