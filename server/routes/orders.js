@@ -2,7 +2,6 @@ import { Router } from "express";
 import { rateLimit } from "express-rate-limit";
 import { query } from "../db.js";
 import { notifyOrderByEmail } from "../email.js";
-import { notifyOrder } from "../telegram.js";
 import { validateOrder } from "../validation.js";
 
 export const ordersRouter = Router();
@@ -88,10 +87,8 @@ ordersRouter.post("/", orderLimit, async (request, response, next) => {
     );
     const order = result.rows[0];
 
-    // Заявка уже в PostgreSQL. Telegram не может отменить успешное сохранение.
-    void notifyOrder(order.id).catch((error) => {
-      console.error(`[telegram] unable to enqueue order ${order.id}:`, error.message);
-    });
+    // An order is successful only after PostgreSQL returned it. Email delivery
+    // is a separate retryable outbox task and can never roll the order back.
     void notifyOrderByEmail(order.id).catch((error) => {
       console.error(`[email] unable to enqueue order ${order.id}:`, error.message);
     });

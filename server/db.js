@@ -3,6 +3,21 @@ import { config } from "./config.js";
 
 const { Pool } = pg;
 
+const unavailableCodes = new Set([
+  "DATABASE_NOT_CONFIGURED",
+  "ECONNREFUSED",
+  "ECONNRESET",
+  "ETIMEDOUT",
+  "EHOSTUNREACH",
+  "ENETUNREACH",
+  "57P01",
+  "57P02",
+  "57P03",
+  "53300"
+]);
+
+export const isDatabaseUnavailable = (error) => unavailableCodes.has(error?.code);
+
 export const pool = config.databaseUrl
   ? new Pool({
       connectionString: config.databaseUrl,

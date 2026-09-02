@@ -1,33 +1,71 @@
 # MDR Drone Studio
 
-Полноценный сайт MDR: десять дронов, интерактивный конфигуратор, Node.js/Express,
-PostgreSQL, email-уведомления, отзывы с модерацией и закрытая визуальная админка.
+MDR is a full-stack catalogue and configurator for ten drone platforms. The live
+application is intentionally small and has one runtime path: Express serves the
+static storefront, PostgreSQL saves customer data, and Resend delivers owner
+notifications by email.
 
-## Что происходит после отправки формы
+## Active architecture
 
-1. Сервер проверяет имя, телефон, email и адрес доставки.
-2. В PostgreSQL сохраняются покупатель, модель, цвет, комплект, опции и итоговая цена.
-3. Клиент сразу получает номер заявки.
-4. Фоновая очередь отправляет письмо на `itaci3367@gmail.com`.
-5. Заявка сразу появляется на странице `/admin.html`.
-6. Если почтовый сервис временно недоступен, запись остаётся в базе, а отправка
-   повторяется.
-7. Повторная отправка того же запроса безопасна: `clientRequestId` не позволяет
-   создать дубликат заказа.
+```text
+src/web/                 The only published storefront source
+  ├─ *.html              Pages: catalogue, model, configurator, company, contacts, reviews, admin
+  ├─ js/catalog.js       Ten-model product data and configuration options
+  ├─ js/main.js          Page rendering, one order dialog, form/API client
+  ├─ js/viewer.js        Dependency-free interactive 3D canvas model
+  └─ styles/app.css      The only active stylesheet
+server/
+  ├─ app.js              HTTP security, liveness/readiness, static files and API routes
+  ├─ routes/             Orders, reviews and protected admin API
+  ├─ email.js            Transactional email outbox via Resend
+  └─ migrations/         PostgreSQL schema migrations
+build/sync-static.mjs    Publishes only src/web/ into public/
+```
 
-На бесплатном Render первый ответ после простоя может занять до минуты. Клиент
-ждёт до 90 секунд и показывает понятный статус пробуждения сервера.
+Legacy design experiments can remain in the repository for reference, but they
+are not copied to `public/` and cannot be loaded by the running site. There is
+no React, Next, Vite, Cloudflare worker, Telegram process or second visual
+runtime in the active application.
 
-## Отзывы
+## What works
 
-- `GET /api/reviews` возвращает только одобренные отзывы;
-- `POST /api/reviews` сохраняет новый отзыв со статусом `pending`;
-- в `/admin.html` владелец может опубликовать или отклонить отзыв;
-- страница покупателей находится по адресу `/reviews.html`.
+- One product route and one purchase flow for all ten models.
+- Configurator changes the product model, material colour, package, options and
+  calculated final price in one state object.
+- The studio canvas is a real interactive geometric renderer: drag or use the
+  arrows to turn it, turn on X-Ray, Night LEDs or weather conditions. It does
+  not claim to be a manufacturer CAD/photorealistic digital twin.
+- One native `<dialog>` order form. Standard system pointer/text cursors stay
+  visible and the form gets focus when it opens.
+- A submitted order is validated, stored in PostgreSQL first, and then queued
+  for email. Repeating a request does not create a duplicate.
+- `/admin.html` has password/JWT-protected access to saved orders and pending
+  reviews.
+- `/api/health` is a liveness probe and always returns `200` for a running Node
+  process. `/api/readiness` reports database connectivity separately, so an
+  idle database cannot cause Render to repeatedly restart the web process.
 
-## Локальный запуск
+## Environment variables
 
-Нужны Node.js 22+ и PostgreSQL.
+Copy `.env.example` to `.env` for local development. Never commit a real key.
+
+| Variable | Required | Purpose |
+| --- | --- | --- |
+| `DATABASE_URL` | yes | PostgreSQL connection string |
+| `DATABASE_SSL` | Render: `true` | Enables TLS for PostgreSQL |
+| `RESEND_API_KEY` | for email | Resend server-side key |
+| `ORDER_NOTIFICATION_EMAIL` | yes | Owner inbox (`itaci3367@gmail.com`) |
+| `ORDER_EMAIL_FROM` | yes | Verified Resend sender address |
+| `JWT_SECRET` | yes | 32+ character admin-token secret |
+| `ADMIN_PASSWORD` | yes | Password for `/admin.html` |
+
+Without `RESEND_API_KEY` an order is still stored in PostgreSQL and visible in
+the admin panel; its email status is marked `unconfigured` instead of falsely
+claiming delivery.
+
+## Local run
+
+Use Node.js 22 or newer and a PostgreSQL database.
 
 ```bash
 cp .env.example .env
@@ -37,67 +75,33 @@ npm run db:migrate
 npm run dev
 ```
 
-Сайт откроется на `http://localhost:3000`. Проверка сервера:
-`http://localhost:3000/api/health`.
+Open `http://localhost:3000`. Check process liveness at
+`http://localhost:3000/api/health` and database readiness at
+`http://localhost:3000/api/readiness`.
 
-## Email и админка
-
-Админка находится по адресу `/admin.html` и использует `ADMIN_PASSWORD`.
-Письма отправляются через Resend. Секрет `RESEND_API_KEY` хранится только на
-сервере; в код и Git он не попадает. Получатель уже задан:
-`ORDER_NOTIFICATION_EMAIL=itaci3367@gmail.com`.
-
-## Развёртывание на Render
-
-В проекте есть `render.yaml`:
-
-1. Загрузите проект в GitHub/GitLab.
-2. В Render выберите **New → Blueprint** и подключите репозиторий.
-3. Укажите секреты `RESEND_API_KEY` и `ADMIN_PASSWORD`.
-4. После запуска проверьте `/api/health`, отправьте тестовую заявку и откройте
-   `/admin.html`.
-
-PostgreSQL, миграции, health check и очередь email настраиваются Blueprint-файлом.
-
-## Развёртывание на VPS
-
-Установите Docker и Compose, затем создайте `.env`:
-
-```env
-POSTGRES_PASSWORD=strong_database_password
-PUBLIC_BASE_URL=https://mdr.example.com
-RESEND_API_KEY=re_xxxxxxxxx
-ORDER_NOTIFICATION_EMAIL=itaci3367@gmail.com
-JWT_SECRET=another_long_random_secret
-ADMIN_PASSWORD=strong_admin_password
-```
-
-Запуск:
+## Checks
 
 ```bash
-docker compose up -d --build
+npm run check
+npm test
 ```
 
-Перед приложением следует поставить Caddy или Nginx с TLS-сертификатом.
+The tests verify that only `src/web` gets published, the active build has one
+order dialog and no hidden cursor, API saving stays idempotent, and liveness is
+separate from database readiness.
 
-## Закрытая админка и API
+## Render deployment
 
-JWT не требуется покупателю. Он используется только для администрирования:
+`render.yaml` defines one Node web service plus PostgreSQL:
 
-- `POST /api/admin/login` — получить токен по `ADMIN_PASSWORD`;
-- `GET /api/admin/orders` — список заявок;
-- `PATCH /api/admin/orders/:id` — изменить статус;
-- `POST /api/admin/orders/:id/resend-email` — повторить письмо владельцу;
-- `DELETE /api/admin/orders/:id` — мягко удалить заявку.
-- `GET /api/admin/reviews` — очередь отзывов;
-- `PATCH /api/admin/reviews/:id` — одобрить или отклонить отзыв.
+1. Push this folder to a GitHub repository.
+2. In Render choose **New → Blueprint** and select that repository.
+3. Set `RESEND_API_KEY` and `ADMIN_PASSWORD` as secrets. Replace
+   `ORDER_EMAIL_FROM` with a sender domain verified in Resend before production.
+4. Render runs `npm install --omit=dev && npm run build`, migrations, and then
+   `npm start`. Its health check uses `/api/health`.
+5. Send one test request, check the record at `/admin.html`, and confirm the
+   email in `itaci3367@gmail.com`.
 
-Передавайте токен в заголовке `Authorization: Bearer <token>`.
-
-Telegram-модуль сохранён как необязательный дополнительный канал, но для работы
-сайта и получения заявок он не требуется.
-
-## Контакты MDR
-
-- Телефон: `+998 91 001 81 72`
-- Email: `itaci3367@gmail.com`
+Do not use the old Vite/Cloudflare configuration or a static hosting service
+for this version: orders, reviews and email need the Express API and PostgreSQL.
