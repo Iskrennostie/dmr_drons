@@ -1,6 +1,6 @@
 {
   "name": "mdr-drone-studio",
-  "version": "20.0.0",
+  "version": "22.0.0",
   "private": true,
   "engines": {
     "node": ">=22.13.0"
@@ -9,44 +9,18 @@
     "dev": "node --watch server/index.js",
     "start": "node server/index.js",
     "db:migrate": "node server/scripts/migrate.js",
-    "telegram:setup": "node server/scripts/setup-telegram.js",
     "test": "node --test server/tests/*.test.js",
-    "site:dev": "node build/sync-static.mjs && WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext dev",
-    "site:build": "node build/sync-static.mjs && WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext build",
     "build": "node build/sync-static.mjs",
-    "check": "node --check app.js && node --check studio.js && node --check cockpit-core.js && node --check cockpit.js && node --check ar.js && node --check admin.js && node --check buy.js && node --check reviews.js && node --check product-page.js && node --check products.js && node --check server/index.js && node --check server/email.js && node --check server/telegram.js && node --check server/routes/orders.js && node --check server/routes/reviews.js"
+    "check": "node --check server/app.js && node --check server/index.js && node --check server/config.js && node --check server/db.js && node --check server/email.js && node --check server/routes/orders.js && node --check server/routes/reviews.js && node --check src/web/js/catalog.js && node --check src/web/js/viewer.js && node --check src/web/js/main.js"
   },
   "dependencies": {
     "compression": "1.8.1",
     "dotenv": "17.2.3",
-    "drizzle-orm": "0.45.2",
     "express": "5.1.0",
     "express-rate-limit": "8.1.0",
     "helmet": "8.1.0",
     "jsonwebtoken": "9.0.2",
-    "next": "16.2.6",
-    "pg": "8.16.3",
-    "react": "19.2.6",
-    "react-dom": "19.2.6",
-    "react-loading-skeleton": "3.5.0"
-  },
-  "devDependencies": {
-    "@cloudflare/vite-plugin": "1.37.1",
-    "@tailwindcss/postcss": "4.2.1",
-    "@types/node": "22.19.19",
-    "@types/react": "19.2.14",
-    "@types/react-dom": "19.2.3",
-    "@vitejs/plugin-react": "6.0.2",
-    "@vitejs/plugin-rsc": "0.5.26",
-    "drizzle-kit": "0.31.10",
-    "eslint": "9.39.4",
-    "eslint-config-next": "16.2.6",
-    "react-server-dom-webpack": "19.2.6",
-    "tailwindcss": "4.2.1",
-    "typescript": "5.9.3",
-    "vinext": "0.0.50",
-    "vite": "8.0.13",
-    "wrangler": "4.92.0"
+    "pg": "8.16.3"
   },
   "type": "module"
 }
